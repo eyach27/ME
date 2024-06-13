@@ -1,0 +1,103 @@
+<link rel="stylesheet" href="https://cdnjs.cloudfconsolelare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class=" container" >
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="panel panel-primary">
+            <div class="col-md-80 col-xs-12 col-sm-12 ">
+
+                <div class="container-fluid">
+                    <br>
+                    <small *ngIf="!isuploaded" class=" alert alert-danger"> {{errorMessage}}</small>
+                         <small *ngIf="test" class=" alert alert-success"> {{message}}</small>
+                    <br>
+                    <div class="row ">
+                        <h1 class="animate__animated animate__bounce pers" ><strong>Nouveau document </strong></h1>
+                    </div>
+
+                    <div class="dropzone" appDnd (fileDropped)="onFileDropped($event)">
+                        <input class="inputt" [disabled]="files.length!=0" type="file" #fileDropRef id="fileDropRef" (change)="fileBrowseHandler($any($event).target.files)" />
+                        <i class='bx bx-cloud-upload' ></i>
+                        <h3>Glisser votre document ici</h3>
+                    </div>
+                    <h3>Ou</h3>
+                    <label class="label" for="fileDropRef">Naviguer</label>
+                    <div class="files-list ">
+                        <div class="single-file " *ngFor="let file of files; let i=index ">
+                            <img src="../../../assets/images/fichier-inconnu.png" style =" width:68px ; margin-left:20px " alt="file ">
+                            <div class="info ">
+                                <h4 class="name " style="text-align: left;">
+                                    <input type="text" name="name" id="name" type="text" [(ngModel)]="file.newName" placeholder="Vous pouvez renommer votre document :  {{ file?.name.substring(0, file?.name.lastIndexOf('.')) }}" #myInput autofocus />            
+                                </h4>
+                                <p class="size ">
+                                    {{ formatBytes(file?.size) }}
+                                </p>
+                                <app-progress [progress]="file?.progress "></app-progress>
+                            </div>
+                            <br>
+
+
+                            <form  *ngIf="showAdminBoard" class="form-group" name="form" #f="ngForm" novalidate>
+
+                            
+                                <select name="dep" id="dep" class="form__input"  #dep="ngModel" [(ngModel)]="form.dep" (change)="onDepartmentSelected($event.target)" multiple >
+                                    <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                                  </select>
+                                  
+                                  
+                            </form>
+                            
+                            <i class="fas fa-tag" alt="file " (click)="open(content,$event) " href="javascript:void(0);" [ngClass]="{'tag-added': tagAdded, 'no-tags': Tags.length === 0}"></i>
+                            <mat-chip-list>
+                                <mat-chip *ngFor="let tag of Tags" class="mat-chip">{{ tag }}</mat-chip>
+                              </mat-chip-list>
+                              <i class="delete fas fa-trash" alt="file" (click)="deleteFile(i)"></i>
+
+                        </div>
+                    </div>
+                    <button   type="submit " (click)="submit() " class="btn btn-outline-success " [disabled]="!files.length || files.length==0 || Tags.length==0 || (showAdminBoard && form.dep==null ) " >Ajouter</button>
+
+                </div>
+            </div>
+      
+            <ng-template #content let-c=" close " let-d="dismiss ">
+                <div class="modal-header ">
+             
+                    <h4 class="modal-basic-title">Ajouter des tags</h4>
+                    <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                                  <span aria-hidden="true " id="fermer">×</span>    
+                    </button>
+                </div>
+          
+                <div class="note row2">"Appuyez entrée ou espace pour valider le tag"</div>
+                <div class="modal-body " >
+                    <form class="form-group form-tag"style="padding: 2px">
+                        <div class="form-group " style='text-align: start;'>
+                            <mat-form-field class="input">
+                                <mat-chip-list #taglist>
+                                    <mat-chip selected color="grey" *ngFor="let Tag of Tags" [selectable]="selectable" [removable]="removable" (removed)="remove(Tag)">
+                                        {{Tag}}
+                                        <mat-icon matChipRemove *ngIf="removable"> </mat-icon>
+                                    </mat-chip>
+                                    <input required minlength="2" maxlength="20" placeholder="Ajouter Tags"  [matChipInputFor]="taglist" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"  class="input-tag"/>
+                                </mat-chip-list>
+
+                            </mat-form-field>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button " class="btn btn-outline-secondary tag" (click)="d( 'Cross click') " style="margin-top:0px;">Annuler</button>
+                    <button type="button " class="btn btn-outline-info tag" (click)="c( 'yes') " style="margin-top: 0px;">Ajouter</button>
+                </div>
+            </ng-template>
+
+        </div>
+    </div>
+</div>
+
+
+<div #container></div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

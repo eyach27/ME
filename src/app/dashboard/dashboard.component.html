@@ -1,0 +1,183 @@
+<!-- Boxiocns CDN Link -->
+<link href='https://unpkg.com/boxicons@2.0.7/css/boxicons.min.css' rel='stylesheet'>
+
+<body >
+  <div class="sidebar close" [ngClass]="{ close: !isMenuOpen }">
+    <ul class="nav-links">
+
+      <div class="profile-details">
+        <div class="profile-content">
+          <a routerLink="/profile" ><img [src]="profilePhotoUrl" alt="profileImg"></a>
+        </div>
+        <div class="name-job">
+          <div class="profile_name">{{user.username}}</div>
+          <div class="job">{{user.poste}}</div>
+        </div>
+        <i class='bx bx-chevron-right toggle'(click)="toggleMenu()"></i>
+      </div>
+
+      <br>
+      <br>
+      
+     <div class="elements" style="max-height:100%;">
+      <div>
+        <li class="icon-background">
+          <div class="iocn-link " >
+            <a routerLink="/doc-upload">
+              <i class='bx bx-file-blank icon'></i>
+              <span class="link_name">Gestion des documents</span>
+            </a>
+            <i class='bx bxs-chevron-down arrow' ></i>
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" routerLink="/doc-upload">Gestion des documents</a></li>
+            <li class="sous-tache"><a routerLink="/doc-upload">Nouveau document</a></li>
+            <li class="sous-tache"><a routerLink="/doc-view">Tous les documents</a></li>
+            <li class="sous-tache"><a routerLink="/doc-bydep">Documents de mon poste</a></li>
+            <li class="sous-tache"><a routerLink="/doc-fav">Documents en favoris</a></li>
+            <li class="sous-tache"><a routerLink="/mes-documents">Mes documents</a></li>
+          </ul>
+        </li>
+  
+        <li class="icon-background" [hidden]="!showFormateurboard && !showAdminBoard">
+          <div class="iocn-link" >
+            <a routerLink="/formations">
+              <i class='bx bx-slideshow icon'></i>
+              <span class="link_name">Gestion des formations</span>
+            </a>
+            <i class='bx bxs-chevron-down arrow' ></i>
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" routerLink="/formations">Gestion des formations</a></li>
+            <li class="sous-tache"><a routerLink="/creer-formation">Nouvelle formation</a></li>
+            <li class="sous-tache"><a routerLink="/plan-formation">Planifier une formation</a></li>
+            <li class="sous-tache"><a routerLink="/plan-lot">Planifier un Lot de formations</a></li>
+            <li class="sous-tache"><a routerLink="/formations">Toutes les formations</a></li>
+            <li class="sous-tache"><a routerLink="/mes-formations">Mes formations</a></li>
+          </ul>
+        </li>
+  
+  
+        <li class="icon-background" [hidden]="!showuserboard">
+          <div class="iocn-link" >
+            <a routerLink="/mes-formations">
+              <i class='bx bx-slideshow icon'></i>
+              <span class="link_name">Gestion des formations</span>
+            </a>
+            <i class='bx bxs-chevron-down arrow' ></i>
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" routerLink="/formations">Gestion des formations</a></li>
+            <li class="sous-tache"><a routerLink="/mes-formations">Mes formations</a></li>
+          </ul>
+        </li>
+  
+  
+        <li  [hidden]="!showAdminBoard" class="icon-background">
+       
+          <div class="iocn-link">
+            <a routerLink="/user-create">
+              <i class='bx bx-user-pin icon'></i>
+              <span class="link_name">Gestion des utilisateurs</span>
+            </a>
+            <i class='bx bxs-chevron-down arrow' ></i>
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" routerLink="/user-create">Gestion des utilisateurs</a></li>
+            <li class="sous-tache"><a routerLink="/user-create">Nouveau compte utilisateur</a></li>
+            <li class="sous-tache"><a routerLink="/user-list">Tous les comptes utilisateurs</a></li>
+            <li class="sous-tache"><a routerLink="/user-enattente">Demande d'inscription en attente</a></li>
+          </ul>
+        </li>
+  
+        <li [hidden]="!showAdminBoard" class="icon-background">
+          <div class="iocn-link">
+            <a routerLink="/departement">
+              <i class='bx bx-data icon' ></i>
+              <span class="link_name" >Gestion des postes</span>
+            </a>
+          </div>
+          <ul class="sub-menu">
+            <li><a class="link_name" routerLink="/departement">Gestion des postes </a></li>
+          </ul>
+        </li>
+        <li [hidden]="!showAdminBoard" class="icon-background">
+          <div class="iocn-link" >
+            <a (click)="openstat()">
+              <i class='bx bx-bar-chart-alt-2'></i>
+              <span class="link_name" (click)="openstat()" >Statistiques</span>
+            </a>
+          </div>
+          <ul class="sub-menu inf">
+            <li><a (click)="openstat()" class="link_name menu-text" >Statistiques</a></li>
+          </ul>
+        </li>
+        <!--<li  class="icon-background">
+          <div class="iocn-link" >
+            <a>
+              <i class='bx bx-message-rounded-dots'></i>
+              <span class="link_name">Discution</span>
+            </a>
+          </div>
+          <ul class="sub-menu inf">
+            <li><a  class="link_name menu-text" >Discution</a></li>
+          </ul>
+        </li>-->
+
+        <div class="bottom">
+          <li  class="icon-background" >
+            <div class="iocn-link">
+              <a (click)="switchMode()">
+                <i [ngClass]="testclass" id="changemode"></i>
+                <span class="link_name mode-text" (click)="switchMode()">{{modeaff}}</span>
+              </a>
+            </div>
+            <ul class="sub-menu inf">
+              <li><a class="link_name menu-text" (click)="switchMode()">{{modeaff}}</a></li>
+            </ul>
+          </li>
+    
+          <li class="icon-background">
+
+            <div class="iocn-link" >
+            
+            <a (click)="help()">
+            
+            <i class='bx bx-help-circle'></i>
+            
+            <span class="link_name" (click)="help()" >Aide à l'utilisation</span>
+            </a>
+        </div>
+            
+            <ul class="sub-menu inf">
+            
+            <li><a (click)="help()" class="link_name menu-text" >Aide a l'utilisation</a></li>
+            
+            </ul>
+            
+         </li>
+
+          <li  class="icon-background">
+            <div class="iocn-link" >
+              <a (click)="logout()">
+                <i class='bx bx-log-out icon'></i>
+                <span class="link_name" (click)="logout()" >Se déconnecter</span>
+              </a>
+            </div>
+            <ul class="sub-menu inf">
+              <li><a (click)="logout()" class="link_name menu-text" >Se déconnecter</a></li>
+            </ul>
+          </li>
+        </div> 
+
+      </div>
+        
+       
+      </div>     
+    </ul>
+    <br>
+    <p id="power">
+     &copy; <em id="date"></em>Powred by Neoxam-2023
+    </p>
+  </div>
+</body>

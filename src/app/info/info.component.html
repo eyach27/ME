@@ -1,0 +1,140 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="containerinfo">
+  <app-dashboard></app-dashboard>
+  <div class="card text-center">
+    <div class="panel panel-primary">
+      <div class=" panel-heading ">
+        <h1><strong>Aide à l'utilisation</strong></h1>
+      </div>
+      <div class="panel-body ">
+        <!--------------Admin content---------->
+        <section *ngIf="showAdminContent">
+          <h2>Gestion de profil</h2>
+          <ul>
+            <li  class="dropdown" *ngFor="let item of adminItemsProfil">
+              <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+              <div *ngIf="item.isOpen">
+                <p class="line-break">{{ item.info }}</p>
+              </div>
+            </li>
+          </ul>
+        </section>  
+        <section *ngIf="showAdminContent">
+            <h2>Gestion des postes</h2>
+            <ul>
+              <li *ngFor="let item of adminItemsPoste">
+                <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                <div *ngIf="item.isOpen">
+                  <p class="line-break">{{ item.info }}</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+          <section *ngIf="showAdminContent">
+            <h2>Gestion des utilisateurs</h2>
+            <ul>
+              <li *ngFor="let item of adminItemsUser">
+                <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                <div *ngIf="item.isOpen">
+                  <p class="line-break">{{ item.info }}</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section *ngIf="showAdminContent">
+            <h2>Gestion des documents </h2>
+            <ul>
+              <li *ngFor="let item of adminItemsDoc">
+                <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                <div *ngIf="item.isOpen">
+                  <p class="line-break">{{ item.info }}</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+          <section *ngIf="showAdminContent">
+            <h2>Gestion des Formations </h2>
+            <ul>
+              <li *ngFor="let item of adminItemsForm">
+                <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                <div *ngIf="item.isOpen">
+                  <p class="line-break">{{ item.info }}</p>
+                </div>
+              </li>
+            </ul>
+          </section>
+
+        <!-------------User content------------------>
+              <section *ngIf="showUserContent">
+                <h2>Gestion de profil</h2>
+                <ul>
+                  <li  class="dropdown" *ngFor="let item of userItemsProfil">
+                    <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                    <div *ngIf="item.isOpen">
+                      <p class="line-break">{{ item.info }}</p>
+                    </div>
+                  </li>
+                </ul>
+            </section> 
+            <section *ngIf="showUserContent">
+                <h2>Gestion des documents</h2>
+                <ul>
+                  <li *ngFor="let item of userItemsdoc">
+                    <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                    <div *ngIf="item.isOpen">
+                      <p class="line-break">{{ item.info }}</p>
+                    </div>
+                  </li>
+                </ul>
+            </section>   
+              <section *ngIf="showUserContent">
+                <h2>Gestion des formations</h2>
+                <ul>
+                  <li *ngFor="let item of userItemsForm">
+                    <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                    <div *ngIf="item.isOpen">
+                      <p class="line-break">{{ item.info }}</p>
+                    </div>
+                  </li>
+                </ul>
+            </section>   
+
+    <!--------------Formateur content-------------> 
+            <section *ngIf="showFormateurContent">
+              <h2>Gestion de profil</h2>
+              <ul>
+                <li  class="dropdown" *ngFor="let item of formateurItemsProfil">
+                  <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                  <div *ngIf="item.isOpen">
+                    <p class="line-break">{{ item.info }}</p>
+                  </div>
+                </li>
+              </ul>
+          </section> 
+
+        <section *ngIf="showFormateurContent">
+            <h2>Gestion des documents</h2>
+            <ul>
+              <li  class="dropdown" *ngFor="let item of formateurItemsdoc">
+                <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                <div *ngIf="item.isOpen">
+                  <p class="line-break">{{ item.info }}</p>
+                </div>
+              </li>
+            </ul>
+        </section>   
+        <section *ngIf="showFormateurContent">
+            <h2>Gestion des formations</h2>
+            <ul>
+              <li  class="dropdown" *ngFor="let item of formateurItemsdoc">
+                <button class="dropdown-button" (click)="toggleDropdown(item)">{{ item.title }}</button>
+                <div *ngIf="item.isOpen">
+                  <p class="line-break">{{ item.info }}</p>
+                </div>
+              </li>
+            </ul>
+        </section>   
+      </div>
+    </div>
+  </div>
+</div>

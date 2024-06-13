@@ -1,0 +1,105 @@
+<div *ngIf="isLoggedIn"  [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center" >
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1  style=" margin: 0px;"><strong>Liste des demandes d'inscription en attente</strong></h1>
+            </div>
+            <div class="panel-body ">
+                <div class="search-hero ">
+                    <select name="filtre" id="filtre " filtre  class="filter-list"  required #filtre="ngModel" [(ngModel)]="formSearch.filtre">
+                        <option value="firstname">Nom</option>
+                    </select>
+                    <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;" [(ngModel)]="formSearch.rech"  name="rech" Filtre>
+                </div>
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="test" class=" alert alert-success"> {{message}}</small> 
+                </div>
+                <button (click)="openee(contentee)" href="javascript:void(0); " class="btn btn-outline-success" style="margin-bottom:8px;margin-top:6px ">Accepter Tous</button>
+                <div class="table-responsive showform">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr disabled>
+                                <th style="width: 5%;"></th>
+                                <th style="width: 12%;">Prénom</th>
+                                <th style="width: 12%;">Nom</th>
+                                <th style="width: 15%;">Nom d'utilisateur</th>
+                                <th style="width: 17%;">Email</th>
+                                <th style="width: 14%;">Poste</th>
+                                <th style="width: 10%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of users | async | paginate: { itemsPerPage: count, currentPage: p } | filter:searchText , let i = index ">
+                                <td>{{i+1}}</td>
+                                <td>{{user.firstname}}</td>
+                                <td>{{user.lastname}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.poste}}</td>
+                                <td>
+                                    <i class='bx bx-user-check icon'  (click)="opene(contente,user.id)"></i>
+                                    <i class='bx bx-user-x icon' (click)="open(content,user.id)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <ng-template #content let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h4 class="modal-title " id="modal-basic-title ">Refuser une demande d'inscription</h4>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+            </div>
+            <div class="modal-body ">
+                <p>Voulez-vous vraiment refuser cet utilisateur ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-danger " (click)="c( 'yes') ">Refuser</button>
+            </div>
+        </ng-template>
+
+
+        <ng-template #contente let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h4 class="modal-title " id="modal-basic-title ">Accepter une demande d'inscription</h4>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                </button>
+            </div>
+            <div class="modal-body ">
+                <p>Voulez-vous vraiment accepter cet utilisateur ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Accepter</button>
+            </div>
+        </ng-template>
+
+        <ng-template #contentee let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h1 class="modal-title " id="modal-basic-title ">Accepter toutes les demandes d'inscriptions</h1>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+            </div>
+            <div class="modal-body ">
+                <p>Voulez-vous vraiment accepter tous les utilisateurs en attente ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Accepter Tous</button>
+            </div>
+        </ng-template>
+    </div>
+</div>
+
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

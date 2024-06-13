@@ -1,0 +1,163 @@
+
+.container{
+  margin-left: 67px !important;
+   padding: 0px !important;
+   max-width: calc(100vw - 67px);
+ }
+ h1{
+   color: var(--h1);
+   margin-top: 14px;
+ }
+ h4{
+   font-size: 20px;
+ }
+ table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0px;
+}
+
+.showform{
+  margin: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 98%;
+  box-shadow: var(--box-shadow);
+  height: auto;
+  max-height:calc(100vh - 160px)
+}
+.showform thead tr {
+  position: sticky;
+  top: 0;
+}
+.icon{
+margin-left: 10px;
+}
+.view-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.doc-icon {
+  margin-right: 5px;
+}
+
+.download-icon {
+  margin-left: auto;
+}
+i {
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 10px;
+}
+
+  .detailsform th,.detailsform td,.details th,.details td,.ajoutformation i{
+    vertical-align: middle;
+  }
+  .detailsform i,.details i,.ajoutformation i{
+    vertical-align: middle;
+    margin-bottom:0 !important;
+  }
+  
+  span {
+    display: inline-block;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    vertical-align: middle;
+  }
+  .expired {
+    td{
+      color: gray !important;
+    }
+    .bx{
+      color :#5d656d ;
+    }
+  }
+  
+  
+  .form__input {
+    width: 100%;
+    padding: 8px;
+    border: none;
+    border-bottom: 1px solid #38424c;
+    font-size: 14px;
+    box-sizing: border-box;
+    color: var(--modal-content-color);
+    background-color: transparent;
+   
+  }
+  .btn-default{
+    margin-top: 15px;
+  }
+  .modal-body {
+    max-height: 700px; 
+    overflow-y: auto; }
+  
+  .detailsform,.list{
+    width: 48%;
+    display: inline-block;
+    vertical-align: top;
+    max-height: 200px;
+    overflow-y: auto;
+    margin-top: 8px;
+    margin-left: 8px;
+    border: 1px solid #0ed8b8;
+  }
+  .list{
+    margin-left:0px;
+  }
+  
+  
+  .details table{ 
+    width: 100%;
+    max-height: 300px;  ;
+    table-layout: fixed;
+    overflow-y: auto;
+  }
+  
+  .details th,.details td {
+    white-space: nowrap; 
+    font-size: 10px; 
+    word-break: break-word; 
+    padding: 2px;
+  }
+  .lesformation {
+    display: flex;
+    overflow: auto;
+    max-height: 200px; 
+  }
+  
+  .lesformation span{
+    font-size: 12px;
+  }
+  
+  .lesformation span:hover{
+  border: none !important;
+  border-radius: 20px;
+  }
+  
+  .detailsform i,.details i{
+  font-size: 20px;
+  }
+  
+  .search-hero {
+    margin-right: 0px;
+    text-align: center;
+  
+    }
+  
+  .search-hero input{
+    width: 20%;
+  }
+  .search-hero input{
+    margin-right: 0PX;
+  }
+  td img{
+    height: 27px;
+    width: 27px;
+  }
+  .view-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }

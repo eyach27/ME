@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" integrity="sha512-afWwOM6yb3Bx3Lp6sZp6kF/wyRfIJi9NTOb2I8+6Yw7g/j+oKu4gQ2k4+1V7ms1qKX+V7lGtx+YmKt23k63C0w==" crossorigin="anonymous" />
+
+  <div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong>Liste des postes</strong></h1>
+            </div>
+            <div class="panel-body ">
+                <div >
+                    <i class="fa-solid fa-circle-plus"></i>
+                    <i class='bx bx-plus-circle' (click)="opencreate(createDepartmentModal)"></i><span  class="span-tous-form" style="margin-bottom: 9px;">Ajouter un poste</span>             
+                </div>
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                  <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                   <small *ngIf="test" class=" alert alert-success"> {{message}}</small> 
+              </div>
+                <div class="table-responsive detailsform">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr disabled>
+                                <th style="width: 15%;">#</th>
+                                <th style="width: 60%;">Nom</th>
+                                <th style="width: 30%;" style="padding:10px 35px !important">Action</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody>
+                            <tr *ngFor="let dep of deps | async , let i = index ">
+                                <td>{{i+1}}</td>
+                                <td>{{dep.name}}</td>
+                                <td>
+                                  <i class='bx bx-edit-alt icon'  (click)="openUpdate(updateDepartmentModal,dep.id)"></i>
+                                  <i class='bx bx-trash-alt icon' (click)="openDelete(content,dep.id)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+              </div>
+        </div>
+
+        <ng-template #content let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h1 class="modal-title " id="modal-basic-title ">Confirmation</h1>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+            </div>
+            <div class="modal-body ">
+                <p>Etes vous sur de la suppression ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-danger " (click)="c( 'yes') ">Supprimer</button>
+            </div>
+        </ng-template>
+         <ng-template #content let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h1 class="modal-title " id="modal-basic-title ">Confirmation</h1>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <p>Etes vous sur de la suppression ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-danger " (click)="c( 'yes') ">Supprimer</button>
+            </div>
+        </ng-template>
+
+
+        <ng-template #updateDepartmentModal let-modal>
+            <div class="modal-header">
+              <h1 class="modal-title" id="modal-basic-title">Renommer le poste</h1>
+              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cancel')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form >
+                <div class="form-group">
+                  <input type="text" placeholder="Nouveau Nom" class="input-dep" [(ngModel)]="newDepartmentName" name="newDepartmentName">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Annuler</button>
+              <button type="button" class="btn btn-primary" (click)="modal.close('yes')">Enregistrer</button>
+            </div>
+          </ng-template>
+
+          <ng-template #createDepartmentModal let-modal>
+            <div class="modal-header">
+              <h1 class="modal-title" id="modal-basic-title">Nouveau poste</h1>
+              <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cancel')">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form>
+                <div class="form-group">
+                  <input type="text" placeholder="Nouveau poste" class="input-dep" id="namedep" [(ngModel)]="namedep" name="namedep">
+                </div>
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" (click)="modal.dismiss('cancel')">Annuler</button>
+              <button type="button" class="btn btn-primary" (click)="modal.close('yes')">Créer</button>
+            </div>
+          </ng-template>
+          
+
+    </div>
+</div>
+
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <div class="card text-center" style='padding: 20px;'>
+        <h1>
+            <Strong>Welcome to NeoDoc</Strong>
+        </h1>
+        <img class="img-responsive" src="../../../assets/images/1527067820254.jpg" alt=" " />
+    </div>
+</div>
+

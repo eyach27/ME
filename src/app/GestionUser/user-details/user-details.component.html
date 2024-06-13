@@ -1,0 +1,33 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container user-details">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center ">
+        <button (click)="list()" class="btn btn-outline-secondary"> <i class='bx bx-arrow-back' undefined ></i>Retour</button>
+        <h1><strong>Les détails de {{ user.firstname}} {{user.lastname}}</strong></h1>
+        <div *ngIf="user"  class="div-details">
+            <div>
+                <label><b>Nom : </b></label> {{ user.firstname}}
+            </div>
+            <div>
+                <label><b>Prénom : </b></label> {{user.lastname}}
+            </div>
+            <div>
+                <label><b>Nom d'utilisateur : </b></label> {{user.username}}
+            </div>
+            <div>
+                <label><b>Email : </b></label> {{user.email}}
+            </div>
+            <div>
+                <label><b>Département : </b></label> {{user.poste}}
+            </div>
+            <div>
+                <label><b>Role:</b></label> {{ role }}
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

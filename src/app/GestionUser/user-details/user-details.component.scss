@@ -1,0 +1,70 @@
+.light{
+  --details-color : #38424c;
+  
+}
+
+.dark{
+  --details-color : #9a9a9a;
+ 
+}
+.container{
+  margin-top:3%;
+  margin-left: 67px !important;
+  padding: 0px !important;
+  max-width: calc(100vw - 67px);
+}
+h1{
+  color: var(--h1);
+  margin: 14px 0px 16px;
+}
+.card {
+  width: 57%;
+  border-radius: 2%;
+  box-shadow: var(--box-shadow);
+  margin: auto;
+  padding:22px 27px;
+  background-color: #f8f9fa00;
+  border:none;
+}
+  
+
+  .btn-outline-secondary {
+    color: var(--btn-retour);
+   
+  }
+  .btn-outline-secondary:hover{
+    background-color: transparent !important;
+    color: var(--btn-retour-hover);
+  }
+
+  
+  .btn-outline-secondary:focus{
+    outline: none;
+    border: none;
+    box-shadow: none;
+  }
+
+  .btn-outline-secondary{
+  width: 20%;
+  padding: 0px;}
+
+  .div-details{
+  display: inline-block;
+  align-items: start;
+  text-align: left;
+  margin: auto;
+  margin-left: 128px;
+  color: var(--details-color) ;
+}
+
+  .div-details div{
+  margin-bottom: 8px;}
+  
+  .btn {
+    display: flex;
+    align-items: center;
+  }
+  
+  .btn i {
+    margin-right: 5px; /* Adjust the spacing between the arrow icon and the text */
+  }

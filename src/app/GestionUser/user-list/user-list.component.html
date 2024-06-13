@@ -1,0 +1,101 @@
+<div *ngIf="isLoggedIn"  [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center" >
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong>Liste des utilisateurs</strong></h1>
+             
+            </div>
+            <div class="panel-body "><div class="search-hero ">
+                <select name="filtre" id="filtre " filtre  class="filter-list"  required #filtre="ngModel" [(ngModel)]="formSearch.filtre">
+                    <option value="firstname">Nom</option>
+                    <option value="role">Role</option>
+                    <option value="poste">Poste</option>
+                </select>
+                <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;" [(ngModel)]="formSearch.rech"  name="rech" Filtre>
+            </div>
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="test" class=" alert alert-success"> {{message}}</small> 
+                </div>
+                <div class="table-responsive showform">
+                    <table class="table table-striped ">
+                        <thead>
+                            <tr disabled>
+                                <th style="width: 3%;">#</th>
+                                <th style="width: 2%;"></th>
+                                <th style="width: 12%;">Prénom</th>
+                                <th style="width: 15%;">Nom</th>
+                                <th style="width: 20%;">Nom d'utilisateur</th>
+                                <th style="width: 15%;">Email</th>
+                                <th style="width: 10%;">Poste</th>
+                                <th style="width: 10%;">Role</th>
+                                <th style="width: 20%;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of users | async | filter:searchText; let i = index"  [ngClass]="{'disabled-row': isDisabled(user)}" >
+                                <td>{{i+1}}</td>
+                                <td><img class="userimage" [src]="user.p" alt="Photo de profil"></td>
+                                <td>{{user.firstname}}</td>
+                                <td>{{user.lastname}}</td>
+                                <td>{{user.username}}</td>
+                                <td>{{user.email}}</td>
+                                <td>{{user.poste}}</td>
+                                <td>
+                                    <div *ngFor="let role of user.roles">
+                                        {{role.name}}
+                                    </div>
+                                </td>
+                                <td> 
+                                    <i class='bx bx-show icon' *ngIf="user.statut" (click)="Todetails(user.id)"></i>
+                                    <i class='bx bx-edit-alt icon' *ngIf="user.statut" (click)="updateUser(user.id)"></i>
+                                    <i class='bx bx-user-minus icon'  *ngIf="user.statut" (click)="open(content,user.id)"></i>
+                                    <i class='bx bx-user-check icon' *ngIf="!user.statut" (click)="open2(content2,user.id)"></i>
+                                </td>
+                            </tr>
+                         </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        
+        <ng-template #content let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h4 class="modal-title " id="modal-basic-title ">Désactiver un utilisateur</h4>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+            </div>
+            <div class="modal-body ">
+                <p>Êtes vous sûr de vouloir désactiver ce compte  ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-danger " (click)="c( 'yes') ">Désactiver</button>
+            </div>
+        </ng-template>
+
+        <ng-template #content2 let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h4 class="modal-title " id="modal-basic-title ">Activer un utilisateur</h4>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+            </div>
+            <div class="modal-body ">
+                <p>Êtes vous sûr de vouloir activer ce compte  ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Activer</button>
+            </div>
+        </ng-template>
+
+    </div>
+</div>
+
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

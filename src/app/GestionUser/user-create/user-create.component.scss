@@ -1,0 +1,109 @@
+.container{
+  margin-top:3%;
+  margin-left: 67px !important;
+  padding: 0px !important;
+  max-width: calc(100vw - 67px);
+}
+h1{
+  color: var(--h1);
+  margin: 14px 0px 16px;
+}
+.card {
+  width: 57%;
+  border-radius: 2%;
+  box-shadow: var(--box-shadow);
+  margin: auto;
+  padding:22px 27px;
+  background-color: #f8f9fa00;
+  border:none;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+select{
+  border-radius: 0px;
+}
+.form__input {
+  width: 100%;
+  border: none;
+  padding: 10px 0px;
+  border-bottom: 1px solid #38424c;
+  font-size: 14px;
+  box-sizing: border-box;
+  color: var(--modal-content-color);
+}
+.form__input:focus {
+  outline: none;
+  border-color: #16ac98;
+}
+.row input:hover{
+  background-color: var(--hover-input);
+}
+.alert_danger{
+  color: #dc3545;
+}
+.row{
+  color: #38424c;
+}
+#poste,.row>*{
+  background-color: transparent;
+}
+
+#poste option{
+  background-color:#dde0e3;
+  color: #38424c;
+}
+.select-hover option:hover {
+  background-color: yellow;}
+
+.role select:hover option {
+  background-color: red;
+}
+.role , label {
+  color: var(--modal-content-color);
+  
+  }
+
+.role input {
+display: inline-block;
+width: 3%;
+margin: 10px 0 15px 10px;
+box-shadow: none;
+}
+input{
+  accent-color:#16ac98;
+  border-color :#16ac98;
+}
+/*@media screen and (min-width: 768px) {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -15px;
+    margin-left: -15px;
+  }
+  .col-md-80 {
+    flex-basis: 80%;
+    max-width: 80%;
+  }
+  .col-xs-12,
+  .col-sm-12 {
+    flex-basis: 100%;
+    max-width: 100%;
+  }
+}
+
+@media screen and (max-width: 767px) {
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -10px;
+    margin-left: -10px;
+  }
+  .form__input {
+    margin-bottom: 10px;
+  }
+  .form__input:last-child {
+    margin-bottom: 0;
+  }
+}*/

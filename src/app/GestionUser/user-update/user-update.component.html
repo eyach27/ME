@@ -1,0 +1,59 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container user-update">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+
+        <div class="col-md-80 col-xs-12 col-sm-12 ">
+            <div class=" text-center" >
+                <div class="panel panel-primary container-fluid">
+                    <h1><strong> Modifier un utilisateur</strong></h1>
+                    <form class="form-group animate__animated animate__backInDown" name="form" #f="ngForm">
+                        <div class="form-group" >
+                            <input disabled type="text" class="form__input" id="firstname" required [(ngModel)]="user.firstname" name="firstname">
+                            <input disabled type="text" class="form__input" id="lastname" required [(ngModel)]="user.lastname" name="lastname">
+                            <input disabled type="text" class="form__input" id="username" required [(ngModel)]="user.username" name="username">
+                            <input disabled type="text" class="form__input" id="email" required [(ngModel)]="user.email" name="email">
+                            
+                            <select name="poste" id="poste" class="form__input" [(ngModel)]="user.poste" required #poste="ngModel">
+                                <option *ngFor="let department of departments" [value]="department.name">{{ department.name }}</option>
+                            </select>
+                            <div *ngIf="poste.errors && (poste.invalid && poste.touched)">
+                                 <small class="text-danger" *ngIf="poste.errors?.['required']">le poste est obligatoire</small>
+                            </div>
+                           
+                            <div class="role">
+                                <label >rôle : </label> 
+                                <input type="radio"id="admin" value="admin" name="role" [(ngModel)]="form.role" required #role="ngModel" class="form__input switch"> Administrateur
+                                <input type="radio" type="radio" id="user" value="user" name="role" [(ngModel)]="form.role" required #role="ngModel"  class="form__input switch">Agent
+                                <input type="radio" id="formateur" value="formateur" name="role" [(ngModel)]="form.role" required #role="ngModel"  class="form__input switch">Formateur 
+                            </div>
+                        </div>
+                        
+                        <button type="submit " class="btn btn-outline-secondary " (click)="retour() " style=" margin-right: 10px ">Annuler</button>
+                        <button (click)="open(content) " href="javascript:void(0); " type="submit " class="btn btn-outline-info ">Enregistrer</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+        <ng-template #content let-c="close " let-d="dismiss ">
+            <div class="modal-header ">
+                <h4 class="modal-title " id="modal-basic-title ">Confirmation</h4>
+                <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+            </div>
+            <div class="modal-body ">
+                <p>Voulez-vous vraiment modifier cet utilisateur ?</p>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-info " (click)="c( 'yes') ">Modifier</button>
+            </div>
+        </ng-template>
+
+    </div>
+
+</div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

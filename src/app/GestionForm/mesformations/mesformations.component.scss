@@ -1,0 +1,127 @@
+.container{
+  margin-left: 67px !important;
+   padding: 0px !important;
+   max-width: calc(99vw - 67px);
+ }
+ h1{
+   color: var(--h1);
+   margin-top: 14px;
+ }
+ h4{
+   font-size: 20px;
+ }
+ table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 0px;
+}
+
+.showform{
+  margin: auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  width: 98%;
+  box-shadow: var(--box-shadow);
+  height: auto;
+  max-height: calc(100vh - 160px);
+}
+.showform thead tr,.datedetails thead tr {
+  position: sticky;
+  top: 0;
+}
+.icon{
+  margin-left: 10px;
+}
+
+.view-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+span {
+  display: inline-block;
+  margin-right: 20px;
+  margin-bottom: 10px;
+  vertical-align: middle;
+}
+
+.form__input {
+  width: 100%;
+  padding: 8px;
+  border: none;
+  border:none;
+  font-size: 14px;
+  box-sizing: border-box;
+  color: var(--modal-content-color);
+  background-color: transparent;
+ 
+}
+.modal-body {
+  max-height: 700px;
+  overflow-y: auto; 
+}
+
+td img{
+  height: 27px;
+  width: 27px;
+}
+
+.detailsform{
+  width: 48%;
+  display: inline-block;
+  vertical-align: top;
+  max-height:121px;
+  overflow-y: auto;
+  margin-top: 8px;
+  margin-left: 8px;
+  border: 1px solid #0ed8b8;
+}
+i {
+  display: inline-block;
+  vertical-align: middle;
+  margin-bottom: 10px;
+ 
+
+}
+.detailsform th,.detailsform td,.details th,.details td{
+  vertical-align: middle;
+}
+.detailsform i,.details i{
+  vertical-align: middle;
+  margin-bottom:0 !important;
+}
+.view-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.datedetails{
+  width: 96%;
+  display: inline-block;
+  vertical-align: top;
+  max-height: 200px;
+  overflow-y: auto;
+  margin-top: 8px;
+  margin-left: 8px;
+  font-size: 10px;
+}
+/*calender*/
+.d-planning {
+  background-color: rgb(128, 0, 105) !important;
+}
+
+.s-planning {
+  background-color: rgb(255, 0, 0) !important;
+}
+
+.calendar {
+  width: 100%;
+  margin-top: 0px;
+  overflow-y: auto;
+  margin: 0 auto;
+  transform: scale(0.9);
+  max-height:calc(100vh - 180px);
+
+}
+

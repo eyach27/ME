@@ -1,0 +1,80 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="col-md-80 col-xs-12 col-sm-12 ">
+            <small *ngIf="f.submitted && isSignUpFailed" class=" alert alert-danger">Création de nouveau compte échouée : {{errorMessage}}</small>
+            <div class="alert alert-success " *ngIf="isSuccessful ">
+                Nouveau compte {{roles}} crée avec succées
+            </div>
+            <div class="container-fluid">
+                <div class="row ">
+                    <h1 class="animate__animated animate__bounce mt-3" style="border: none;"><strong>Nouveau compte utilisateur</strong></h1>
+                </div>
+                <div class="row">
+                    <form class="form-group animate__animated animate__backInDown"  name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate style="background-color: transparent;">
+
+                        <div class="row">
+                            <input type="text" name="firstname" [(ngModel)]="form.firstname" id="firstname" placeholder="Prénom" class="form__input" required #firstname="ngModel" (keyup.enter)="lastnameInput.focus()" [class.is-invalid]="firstname.invalid && firstname.touched" minlength="3" maxlength="20" pattern="^[a-zA-Z_ ]+" autofocus >
+                            <div>
+                                <small class="alert_danger" *ngIf="firstname.errors?.['required']">Le prénom est obligatoire</small>
+                                <small class="alert_danger" *ngIf="firstname.errors?.['minlength'] || firstname.errors?.['maxlength']">Le prénom doit contenir au moins 3 caractères et au plus 20 caractères</small>
+                                <small class="alert_danger" *ngIf="firstname.errors?.['pattern']">Le prénom est invalide, seules les lettres , l'espace et les underscores (_) sont autorisés.<br> </small>
+                            </div>
+                        </div>
+        
+                        <div class="row">
+                            <input type="text" [(ngModel)]="form.lastname" name="lastname" id="lastname" placeholder="Nom" class="form__input" required #lastname="ngModel" #lastnameInput (keyup.enter)="passwordInput.focus()"[class.is-invalid]="lastname.invalid && lastname.touched" minlength="3" maxlength="20" pattern="^[a-zA-Z_ ]+" >
+                            <div *ngIf="lastname.errors && (lastname.invalid && lastname.touched && test)">
+                                <small class="alert_danger " *ngIf="lastname.errors?.[ 'required'] ">Le nom est obligatoire</small>
+                                <small class="alert_danger" *ngIf="lastname.errors?.['minlength'] || lastname.errors?.['maxlength']">Le nom doit contenir au moins 3 caractères et au plus 20 caractères.</small><br>
+                                <small class="alert_danger" *ngIf="lastname.errors?.['pattern']">Le nom est invalide, seules les lettres , l'espace et les underscores (_) sont autorisés.<br> </small>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <input type="text" [(ngModel)]="form.username" name="username " id="username " [class.is-invalid]="username.invalid" placeholder="Nom d'utilisateur (prenom.nom)" class="form__input" required #username="ngModel" #usernameInput readonly [value]="generateUsername()"readonly>
+                        </div>
+        
+                        <div class="row">
+                            <input type="email" [(ngModel)]="form.email" name="email" id="email" placeholder="Email (prenom.nom@neoxam.com)" [class.is-invalid]="email.invalid" class="form__input"  email #email="ngModel" #emailInput [value]="generateEmail()" readonly >
+                        </div>
+                        <div class="row ">
+                            <input type="password" name="password" id="password" placeholder="Mot de passe (minimum 8 caractères)" class="form__input" [(ngModel)]="form.password"  minlength="8" maxlength="20" #password="ngModel" #passwordInput (keyup.enter)="CpasswordInput.focus()" required>
+                        </div>
+                        <div *ngIf="password.errors && (password.invalid && password.touched && test)">
+                            <small class="alert_danger" *ngIf="password.errors?.['required']">le mot de passe est obligatoire</small>
+                            <small class="alert_danger" *ngIf="password.errors?.['minlength']||password.errors?.['maxlength']">le mot de passe doit contenir au moins 8 caractères et au plus 20.</small>
+                        </div>
+                        <div class="row ">
+                            <input type="password" ngModel name="CPassword" id="CPassword" placeholder="Confirmer votre mot de passe" class="form__input" required minlength="8" [(ngModel)]="form.CPassword" #CPassword="ngModel" #CpasswordInput [class.is-invalid]="CPassword.invalid && CPassword.touched">
+                        </div>
+                        <div *ngIf="CPassword.errors && (CPassword.invalid && CPassword.touched && test) || (password.value!=CPassword.value)">
+                            <small class="alert_danger" *ngIf="password.errors?.['required']">le mot de passe est obligatoire</small>
+                            <small class="alert_danger" [class.d-none]="(password.value==CPassword.value)||CPassword.untouched">les deux mots de passe ne sont pas identiques</small>
+                        </div>
+        
+                        <div class="row ">
+                            <select name="poste" id="poste" class="form__input" [(ngModel)]="form.poste" required #poste="ngModel">
+                                <option value="" selected disabled>Choisissez un poste</option>
+                                <option *ngFor="let department of departments" [value]="department.name">{{ department.name }}</option>
+                              </select>
+                            <div *ngIf="poste.errors && (poste.invalid && poste.touched && test)">
+                                <small class="text-danger" *ngIf="poste.errors?.['required']">Le poste est obligatoire</small>
+                            </div>
+                        </div>
+                        <div class="role">
+                            <label >rôle : </label> 
+                            <input  name="roles" type="radio" class="form__input switch"[checked]="isAdmin"  (change)="onCheckboxChange('admin', $event)"> Administrateur
+                            <input type="radio" name="roles"  class="form__input switch" [checked]="isUser" (change)="onCheckboxChange('user', $event)">Agent
+                            <input type="radio" name="roles"  class="form__input switch" [checked]="isFormateur" (change)="onCheckboxChange('formateur', $event)">Formateur 
+                        </div>
+                        <input [disabled]="f.form.invalid" type="submit" value="Créer" class=" btn-default " >
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

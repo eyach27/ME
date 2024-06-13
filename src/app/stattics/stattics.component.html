@@ -1,0 +1,98 @@
+<div *ngIf="isLoggedIn" class="container" [ngClass]="componentClass">
+  <app-dashboard></app-dashboard>
+  <div class="chart-container2">
+  <div id="donut-chart-container" class="chart-container">
+    <apx-chart
+    [series]="donutChartSeries"
+    [chart]="donutChartOptions.chart"
+    [colors]="donutChartOptions.colors"
+    [labels]="donutChartOptions.labels"
+    [plotOptions]="donutChartOptions.plotOptions"
+    [responsive]="donutChartOptions.responsive"
+  ></apx-chart>
+  </div>  
+  <div class="chart">
+    <p>Planifications par formation</p>
+    <div id="horizontal-bar-chart-container"></div>
+     </div>
+    </div>
+ <!---- pie chart for doc by dep
+  <div id="pie-chart-container" class="chart-container">
+    <apx-chart
+      [series]="pieChartOptions.series"
+      [chart]="pieChartOptions.chart"
+      [labels]="pieChartOptions.labels"
+      [responsive]="pieChartOptions.responsive"
+    ></apx-chart>
+  </div>--->
+
+  <div class="chart-container2">
+    <div class="chart">
+      <p>Documents par département</p>
+      <apx-chart
+        [series]="stackedColumnChartOptions.series"
+        [chart]="stackedColumnChartOptions.chart"
+        [xaxis]="stackedColumnChartOptions.xaxis"
+        [colors]="stackedColumnChartOptions.colors"
+      ></apx-chart>
+    </div>
+    <div class="chart">
+      <p>Utilisateurs par département</p>
+      <apx-chart
+        [series]="barChartOptions.series"
+        [chart]="barChartOptions.chart"
+        [colors]="barChartOptions.colors"
+        [xaxis]="barChartOptions.xaxis"
+      ></apx-chart>
+    </div>
+  </div>
+ 
+   
+  <div >
+   
+    <select [(ngModel)]="selectedYear" (ngModelChange)="changeYear($event)">
+      <option *ngFor="let year of years" [value]="year">{{ year }}</option>
+    </select>
+     <div id="line-chart-container" class="chart">
+      <p>Nombre de formations par moins</p>
+     </div>
+  </div>
+  
+  
+  <select id="selecteduser" [(ngModel)]="selectedUser" (change)="onUserChange()">
+    <option *ngFor="let user of usersForm" [value]="user.username">
+      <img class="userimage" [src]="user.p" alt="Photo de profil"/>{{ user.username }}
+    </option>
+  </select>
+  
+  
+  <div id="pie-chart-container" class="chart-container">
+    <apx-chart
+      [series]="pieChartOptions2.series"
+      [chart]="pieChartOptions2.chart"
+      [labels]="pieChartOptions2.labels"
+      [colors]="pieChartOptions2.colors"
+      [responsive]="pieChartOptions2.responsive"
+    ></apx-chart>
+  </div>
+  
+  <!--Top5-->
+
+  <div class="chart-container2">
+
+   <div id="FormateurTop5" class="chart">
+    
+    <p>Top 5 formateurs </p>
+    
+    </div>
+    
+    <div id="ParticipantsTop5" class="chart">
+    
+    <p>Top 5 Participants </p>
+    </div>
+    
+    </div>
+  </div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+  <app-home></app-home>
+</div>

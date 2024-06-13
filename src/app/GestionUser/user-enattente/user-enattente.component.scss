@@ -1,0 +1,33 @@
+.container{
+  margin-left: 67px !important;
+  padding: 0px !important;
+  max-width: calc(100vw - 67px);
+}
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0px;
+  }
+  .showform{
+    margin: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 98%;
+    box-shadow: var(--box-shadow);
+    height: auto;
+    max-height:calc(100vh - 197px)
+  }
+  .showform thead tr {
+    position: sticky;
+    top: 0;
+  }
+  h1{
+
+    color: var(--h1);
+    margin-top: 14px !important;
+    margin-bottom: 16px !important;
+  }
+  .icon{
+    margin-right: 10px;
+  }

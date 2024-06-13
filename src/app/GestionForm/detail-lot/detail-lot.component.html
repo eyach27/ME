@@ -1,0 +1,160 @@
+<div class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong> Détails Lot </strong></h1>
+            </div>
+            <div class="panel-body ">
+                <div  class="search-hero mat-form-field">
+                    <select  name="filtre " id="filtre " filre  class="filter-list"  required >
+                        <option value="formateur">Formation</option>
+                        <option value="formateur">Formateur</option>
+                        <option value="poste">Poste</option>
+                        <option value="date">Année</option>
+                    </select>
+                     
+                    <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;"  name="rech" (keyup)="applyFilter($event)"  Filtre [(ngModel)]="filterValue" Filtre>
+                   
+                </div>
+               
+                <div>
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                </div>
+                 <div>
+                    <div class="form-group" style="text-align: start;margin-left: 40%;">
+                        <div>
+                            <span>Nom du lot : {{SelectedviewLot.name}} </span>
+                        </div>      
+                        <div>
+                            <span>Date de début : {{SelectedviewLot.startDate| date:'dd/MM/yyyy HH:mm'}} </span>
+                        </div> 
+                        <div>
+                            <span>Date limite : {{SelectedviewLot.endDate | date:'dd/MM/yyyy HH:mm'}} </span>
+                        </div> 
+                        <div style="display: flex;">Poste : 
+                            <span *ngFor="let dep of SelectedviewLot.departments"> {{dep.name}}</span>
+                        </div>                  
+                        
+                    </div>
+
+                    <div class="table-responsive showform" style=" margin-top: 14px;">
+                        <table class="table table-striped" >
+                            <thead>
+                                <tr disabled>
+                                    <th ></th>
+                                    <th >Nom formation</th>
+                                    <th >Date de début</th>
+                                    <th >Date Limite</th>
+                                    <th >Formateur</th>
+                                    <th >Poste</th>
+                                    <th>Localisation</th>
+                                    <th >Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            
+                                <tr [ngClass]="{'expired': isDateExpired(formationPlan.endDate)}" *ngFor="let formationPlan of SelectedviewLot.formationsPlan|filter: filterValue; let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td>{{ formationPlan.formation.name}}</td>
+                                    <td>{{ formationPlan.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                    <td>{{ formationPlan.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                    <td>{{ formationPlan.formateur.username}}</td>
+                                    <td><span *ngFor="let dep of formationPlan.departements">{{dep.name}}</span></td>
+                                    <td>{{ formationPlan.localisation}}</td>
+                                    <td> 
+                                        <i class='bx bx-file-blank icon' (click)="openlistDoc(openlistdoc,formationPlan.documents)"></i>
+                                        <i class='bx bx-user icon' (click)="openListPart(openlistparticipant,formationPlan.participants )"></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+  
+        <!--popup doc view pour form -->
+        <ng-template #openlistdoc let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Les documents associés</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <table class="table table-striped list" style="width: 100%;">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:13.2%">Les documents</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let document of SelectedDocs">
+                                    <td>
+                                        <div class="view-wrapper">
+                                          <span class="doc-icon"><i class='bx bxs-file-doc'></i></span>
+                                          <span class="doc-name">{{ document.name.length > 20 ? document.name.slice(0, 12) + '...' : document.name }}</span>
+                                          <span class="download-icon"><i class='bx bxs-download' (click)="download(document.id, document.name)"></i></span>
+                                        </div>
+                                    </td>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+            </div>
+        </ng-template>
+
+
+         <!--popup view pour la liste des participant -->
+         <ng-template #openlistparticipant let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Les participants</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <table class="table table-striped list " style="width: 100%;">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:13.2%">Les participant</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let participant of SelectedParticipant">
+                                  <td class="icon-text-container">
+                                    <i class="bx bxs-user-circle icon"></i>
+                                    {{participant.username}}
+                                  </td>
+                                </tr>
+                              </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+            </div>
+        </ng-template>
+
+
+          
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+           

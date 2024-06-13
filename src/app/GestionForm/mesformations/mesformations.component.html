@@ -1,0 +1,141 @@
+<div class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center" >
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong>Mes formations</strong></h1>
+            </div>
+            
+            <div class="panel-body ">
+                <div  class="search-hero mat-form-field">
+                    <select  name="filtre " id="filtre" filtre  class="filter-list"  required >
+                        <option  value="formation"selected >Formation</option>
+                        <option value="formateur">Formateur</option>
+                        <option value="date">Année</option>
+                    </select>
+                    
+                    <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;"  name="rech" [(ngModel)]="filterValue" (keyup)="applyFilter()" Filtre>
+                    <div style="display: inline-block;">
+                        <i class='bx bx-calendar' (click)="OpenCalendar()"></i>
+                        <i class='bx bx-up-arrow-alt' matTooltip="Mes formations à dispenser" (click)="showformationD()"></i>
+                        <i class='bx bx-down-arrow-alt' matTooltip="Mes formations suivies" (click)="showformationS()"></i>
+                   </div>
+                </div>
+                <div class="calendar">
+                    <ng-container *ngIf="OpenCalender">
+                        <full-calendar [options]="calendarOptions"></full-calendar>
+                      </ng-container>
+                      </div>
+                
+                <div>
+                    <div class="table-responsive showform" *ngIf="!OpenCalender">
+                        <table class="table table-striped ">
+                            <thead>
+                                <tr disabled>
+                                  <th style="width:3% "></th>
+                                  <th *ngFor="let header of columnHeaders" [style.width]="header.width">{{header.name}}</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr *ngFor="let plan of planningList; let i = index">
+                                   
+                                        <td>{{i+1}}</td>
+                                        <td>{{plan.formation.name.length >= 20 ?plan.formation.name.slice(0, 12) + '...' : plan.formation.name }}</td>
+                                        <td>{{plan.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                        <td>{{plan.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                        <td *ngIf="columnHeaders === columnHeadersDispense" >
+                                            <span *ngFor="let participant of plan.participants | slice:0:2; let last=last" Style="display: inline !important;">
+                                                {{participant.username}}
+                                                <ng-container *ngIf="last && plan.participants.length > 2">...</ng-container>
+                                              </span>
+                                         </td>
+                                        <td *ngIf="columnHeaders === columnHeadersSuivies">{{plan.formateur.username.length > 20 ?plan.formateur.username.slice(0, 12) + '...' : plan.formateur.username }}</td>
+                                        <td>{{plan.localisation}}</td>
+                                        <td><i class='bx bx-show' (click)="opendetailsform(contentdetailform,plan)" ></i></td>
+                                    </tr>
+                               
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+                <!--detail formation -->
+                <ng-template  #contentdetailform let-c="close " let-d="dismiss " class="modal-content">
+                    <div class="modal-header ">
+                        <h4 id="modal-basic-title ">Détails de la formation</h4>
+                        <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                          <span aria-hidden="true ">×</span>    
+                      </button>
+                    </div>
+                    <div class="modal-body ">
+                        <div class="container-fluid">
+                            <form class="form-group animate__animated animate__backInDown" id="form-details">
+                                <div class="form-group" >
+                                    <input type="text" class="form__input" id="lot" placeholder="Nom de la formation: {{SelectedPlan.formation.name}}" disabled>
+                                    <input type="text" class="form__input" id="formateur" placeholder="Formateur: {{SelectedPlan.formateur.username}}" disabled>
+                                    <input type="text" class="form__input" id="poste" placeholder="Poste:" disabled><p *ngFor="let department of SelectedPlan.departements.slice(0, 2)">{{ department.name }}</p>
+                                    <input type="text" class="form__input" id="Autre" placeholder="description: {{SelectedPlan.description}}" disabled>
+                                    <input type="text" class="form__input" id="Autre" placeholder="Autre: {{SelectedPlan.localisation}}" disabled>
+                                  
+                                </div>
+                                <table class="datedetails">
+                                    <thead>
+                                      <tr>
+                                        <th style="width: 1%;">Date</th>
+                                        <th style="width: 1%;">heure de debut  </th>
+                                        <th style="width: 1%;">heure de fin </th>
+                                      </tr>
+                                    </thead>
+                                    <tbody>
+                                      <tr *ngFor="let interval of intervals">
+                                        <td> {{ interval[0] | date:'dd/MM/yyyy' }}</td>
+                                        <td> {{ interval[0] | date:'HH:mm' }}</td>
+                                        <td> {{ interval[1] | date:'HH:mm' }}</td>
+                                      </tr>
+                                    </tbody>
+                                  </table>
+                                <table class="table table-striped detailsform">
+                                    <thead>
+                                        <tr disabled>
+                                            
+                                            <th style="width:13.2% ">Les participants</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let participant of SelectedPlan.participants">
+                                            <td>
+                                                
+                                                    <img class="userimage" [src]="participant.p" alt="Photo de profil de {{ participant.username }}" style="margin-right: 20px;">
+                                                    <span> {{ participant.username.length > 20 ? participant.username.slice(0,12) + '...' : participant.username }}</span>
+                                                
+                                            </td>
+                                        </tr>
+                                  
+                                    </tbody>
+                                </table>
+                                <table class="table table-striped detailsform">
+                                    <thead>
+                                        <tr disabled>
+                                            <th style="width:13.2%">Les documents</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody> 
+                                        <tr *ngFor="let doc of SelectedDocs  ">
+                                    
+                                            <td >
+                                                <div class="view-wrapper">
+                                                    <i class='bx bxs-file-doc'></i>{{ doc.name.length > 20 ? doc.name.slice(0, 12) + '...' : doc.name }}<i class='bx bxs-download' (click)="download(doc.id,doc.name)"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        
+                        </div>
+                    </div>
+                    <div class="modal-footer ">
+                        <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+                    </div>
+                </ng-template>

@@ -1,0 +1,217 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="col-md-80 col-xs-12 col-sm-12 ">
+           
+            <div class="container-fluid">
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="valid" class=" alert alert-success"> {{messagevalid}}</small> 
+                </div>
+                <div class="row ">
+                    <h1 class="animate__animated animate__bounce mt-3"><strong>Planifier un lot</strong></h1>
+                </div>
+                <div class="row">
+                    <form class="form-group animate__animated animate__backInDown"  name="form" novalidate style="padding-left: 30px;">
+
+                        <div class="row">
+                            <input type="text" name="formation" id="formation"  [formControl]="LotName" placeholder="Nom du Lot" class="form__input" required [(ngModel)]="form.name">
+                            <div *ngIf="LotName.invalid && (LotName.dirty || LotName.touched)" style="display: grid; text-align: center; color: red;" >
+                                <small class="alert_danger" *ngIf="LotName.errors?.['required']">Nom du lot est obligatoire</small>
+                            </div>
+                           
+                        </div>
+                        
+                        <div class="row">
+                            <ul id="scroltrainer" class="selectable-list" multiple>
+                              <li class="header-row">
+                                <span class="field">Formation</span>
+                                <span class="field">Date de début</span>
+                                <span class="field">Date de fin</span>
+                                <span class="field">Formateur</span>
+                              </li>
+                              <li *ngFor="let plan of tableFormationP; let i = index" (click)="selectPlan(plan)" [class.selected]="isSelected(plan)">
+                                <span class="field" >{{ plan.formation.name.length > 20 ? plan.formation.name.slice(0, 20) + '...' : plan.formation.name }}</span>
+                                <span class="field">{{ plan.startDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                                <span class="field">{{ plan.endDate | date:'dd/MM/yyyy HH:mm' }}</span>
+                                <span class="field">{{ plan.formateur.username }}</span>
+                              </li>
+                            </ul>
+                          </div>
+                          <div class="row">
+                            <span >Choisir les postes</span>
+                            <select name="dep" id="dep" class="form__input"   (change)="onDepartmentSelected($event.target)" multiple >
+                                <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                            </select>
+                        </div>
+                                                
+                        <div class="row">
+                            <span >les formateurs</span>
+                            <select name="formateurs" id="formateurs" class="form__input" multiple >
+                                <option *ngFor="let formateur of Formateurs ; let i = index" [value]="formateur">{{formateur}}</option>
+                            </select>
+                        </div>
+       
+
+                        <div class="row">
+                            <form class="form-group animate__animated animate__backInDown" id="form-details">
+                                <table class="table table-striped detailsform">
+                                    <thead>
+                                        <tr disabled>
+                                            <th style="width:13.2% ">Les participants <i class='bx bx-plus-circle' (click)="openadduser(adduser)"></i></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let user of showselecteduser">
+                                             <div class="view-wrapper">
+                                                    <img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}">
+                                                    <span> {{ user.username.length > 20 ? user.username.slice(0,12) + '...' : user.username }}</span>
+                                                    <i class='bx bx-trash-alt' (click)=" deletuser(user)"></i>
+                                                
+                                                </div>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="table table-striped detailsform" style="margin-left: 17px;">
+                                    <thead>
+                                        <tr disabled>
+                                            <th style="width:13.2%">Les documents</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr *ngFor="let doc of showselectedfile">
+                                            <td>
+                                                <div class="view-wrapper">
+                                                    <img class="docimage"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file">
+                                                    <img class="docimage" *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file">
+                                                    <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file ">
+                                                    <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file ">
+                                                    <img class="docimage" *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file ">
+                                                    <img class="docimage" *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " >
+                                                    <img class="docimage" *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file ">
+                                                    <img class="docimage" *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"src="assets/images/file-inconnu.png"  alt="file">
+                                                    <span class="doc-name">{{ doc.name.length > 20 ? doc.name.slice(0, 12) + '...' : doc.name }}</span>
+                                                    <i class='bx bx-trash-alt'(click)="delet(doc)"></i>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+                        </div>
+                        <input type="submit" [disabled]="LotName.invalid || formPplan.length < 2 || showselecteduser.length === 0"  value="Planifier" (click)="onSubmit()" class=" btn-default ">
+
+                    </form>
+                </div>
+
+            </div>
+        </div>
+         <!--popup add user-->
+         <ng-template #adduser let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Ajouter des participants</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <div class="search-hero mat-form-field" >
+                            <select name="filtre" id="filtre " filre  class="filter-list"  required >
+                                <option  value="nom"selected >Nom</option>
+                                <option value="role">Role</option>
+                                <option value="poste">Poste</option>
+                            </select>
+                            <input class="form-control" type="text" name="search" [(ngModel)]="searchText"  autocomplete="off" placeholder="&#61442;" (input)="updateFilteredUsers();"></div>
+                        <table class="table table-striped popupajout">
+                            <thead>
+                                <tr disabled>
+                                    
+                                    <th style="width:3% ">Photo</th>
+                                    <th style="width:3% ">Nom utilisateur</th>
+                                    <th style="width:3% ">Poste</th>
+                                    <th style="width:3% ">Role</th>
+                                    <th style="width:3% ">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of users | async | filter:searchText; let i = index" >
+                                    <td><img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}"></td>
+                                    <td>{{ user.username.length > 20 ? user.username.slice(0,17) + '...' : user.username }}</td>
+                                    <td>{{user.poste}}</td>
+                                    <td>
+                                        <div *ngFor="let role of user.roles">
+                                            {{role.name}}
+                                        </div>
+                                    </td>
+                                    <td ><i [ngClass]="user.showIcon ? 'bx bx-check-square' : 'bx bx-rectangle'" (click)="toggleIcon2(user)"></i></td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </form>
+
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Ajouter</button>
+            </div>
+        </ng-template>
+    </div>
+</div>
+ <!--popup Definir le temps-->
+ <ng-template #temps let-c="close " let-d="dismiss " class="modal-content">
+    <div class="modal-header ">
+        <h1 id="modal-basic-title ">Définir le temps</h1>
+        <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+          <span aria-hidden="true ">×</span>    
+      </button>
+    </div>
+    <div class="modal-body ">
+        <div class="container-fluid">
+          <form class="form-group animate__animated animate__backInDown">
+                <div class="date">
+                    <label for="date-debut">Début</label>
+                    <input type="date" name="date-debut" id="date-debut" style="margin-left: 64px;width:41% ;"  [(ngModel)]="dateDebut" (ngModelChange)="transformertemps()" (change)="onDateDebutChange()" required>
+                    <input type="time" name="heure"style="margin-left:5px" [(ngModel)]="heured" (ngModelChange)="transformertemps()" required>
+                </div>
+                <div class="date">
+                    <label for="number">Répéter tous les</label>
+                    <input type="number" name="number" id="number" style="width: 11%; margin-right: 5px;"[(ngModel)]="nbrep" min="1" (ngModelChange)="transformertemps()">
+                    <select name="répetition" id="répetition" [(ngModel)]="typerep" (ngModelChange)="transformertemps()" (change)="onChangeRepeatType()">
+                    <option value="jour"selected>Jour</option>
+                    <option value="semaine">Semaine</option>
+                    </select>
+                </div>
+            
+                <div class="jour-semaine" *ngIf="typerep === 'semaine'">
+                    <div class="jour" id="lundi" (click)="onSelectDay('MONDAY')"  [class.selected]="selectedDays.includes('MONDAY')">L</div>
+                    <div class="jour" id="mardi"(click)="onSelectDay('TUESDAY')"  [class.selected]="selectedDays.includes('TUESDAY')">M</div>
+                    <div class="jour" id="mercredi" (click)="onSelectDay('WEDNESDAY')"  [class.selected]="selectedDays.includes('WEDNESDAY')">M</div>
+                    <div class="jour" id="jeudi"(click)="onSelectDay('THURSDAY')"  [class.selected]="selectedDays.includes('THURSDAY')">J</div>
+                    <div class="jour" id="vendredi" (click)="onSelectDay('FRIDAY')" [class.selected]="selectedDays.includes('FRIDAY')" >V</div>
+                    <div class="jour" id="samedi" (click)="onSelectDay('SATURDAY')" [class.selected]="selectedDays.includes('SATURDAY')">S</div>
+                    <div class="jour" id="dimanche" (click)="onSelectDay('SUNDAY')" [class.selected]="selectedDays.includes('SUNDAY')">D</div>
+                </div>
+
+                <div class="date">
+                    <label for="date-fin">Fin</label>
+                    <input type="date" name="date-fin" id="date-fin" style="margin-left:83px;width:41%" [(ngModel)]="datefin" (ngModelChange)="transformertemps()" [min]="minDateFin" required>
+                    <input type="time" name="heuref" style="margin-left:5px"[(ngModel)]="heuref" (ngModelChange)="transformertemps()" required>
+                </div>
+            
+                <span>Se produit {{datedFormatee}}{{heuredaff}} {{nbrepaff}} {{typerepaff}} {{datefFormatee}} {{heurefaff}}</span>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer ">
+        <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+        <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Enregistrer</button>
+    </div>
+    
+</ng-template>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+<app-home></app-home>
+</div>

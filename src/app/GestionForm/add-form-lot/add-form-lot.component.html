@@ -1,0 +1,158 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container planform">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="col-md-80 col-xs-12 col-sm-12 ">
+            <!--<small *ngIf="f.submitted && isSignUpFailed" class=" alert alert-danger">  Création de nouvelle formation échouée : {{errorMessage}}</small>
+            <div class="alert alert-success " *ngIf="isSuccessful ">
+                Nouvelle formation crée avec succées
+            </div>-->
+            <div class="container-fluid">
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="valid" class=" alert alert-success"> {{messagevalid}}</small> 
+                </div>
+                <div class="row ">
+                    <h1 class="animate__animated animate__bounce mt-3"><strong>Planifier une formation pour {{nameLot}}</strong></h1>
+                </div>
+                <div class="row">
+                    <form class="form-group animate__animated animate__backInDown"  name="form" novalidate style="padding-left: 30px;">
+
+                        <div class="row">
+                           
+
+                                <input matInput  class="form__input"  type="text" placeholder="Nom de la formation" [formControl]="formationName" [matAutocomplete]="auto"  required >
+                                
+                                 <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onOptionSelected($event)" >
+                                
+                                <mat-option *ngFor="let formation of formations" [value]="formation.name" (click)="viderTous()">
+                                
+                                {{ formation.name }}
+                                
+                               </mat-option>
+                                
+                                 </mat-autocomplete>
+                        </div>
+                        <div *ngIf="formationName.invalid && (formationName.dirty || formationName.touched)" style="display: grid; text-align: center; color: red;" >
+                            <small class="alert_danger" *ngIf="formationName.errors?.['required']">Nom de formation est obligatoire</small>
+                        </div>
+                        
+
+                        <div class="row">
+                            <input type="text" name="nameoftrainer" placeholder="Choisir un formateur" class="form__input" [(ngModel)]="searchText" (input)="filterTrainers()" [(ngModel)]="selectedTrainer" >
+                            <ul id="scroltrainer">
+                                <li  style='color:#727272 ' *ngFor="let user of filtertrainers let i = index" (click)="selectTrainer(user)"><img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}">{{user.username }}</li>
+                            </ul>
+                        </div>
+                      
+                        <div class="row">
+                            <input type="text"  name="description" id="description" placeholder="Description" class="form__input" [(ngModel)]="description">       
+                        </div>
+
+                       
+                             <div style="padding: 9px 0px; text-align: start;">
+                                <span >Définir le temps: </span><i  [ngClass]='classtime' style="margin-left: 0px !important;" (click)="formationName.valid && selectedTrainer &&  opentemps(temps)" matTooltip="Avant de définir le temps, il faut sélectionner une formation et lui affecter un formateur'."></i>
+                                <div class="alert" role="alertt" [ngClass]="{'alertt-success': isSuccess, 'alertt-danger': isError}" *ngIf="isSuccess || isError" >
+
+                                    {{ message }}
+                                    
+                                     </div>
+                                </div>
+
+                        <div style="padding: 9px 0px; text-align: start; margin-bottom: 8px;">
+                            <div class="col d-inline-block chek" >
+                              
+                                <div class="form-check-inline chek">
+                                    <input type="checkbox" name="autre" id="autre1" value="Présentiel" (change)="onPresentielChange($event)" [(ngModel)]="enPresentiel">
+                                    <label class="form-check-label" for="autre1" style="color:#727272">Présentiel</label>
+                                  </div>
+                                  
+                                  <div class="form-check-inline chek">
+                                    <input type="checkbox" name="autre" id="autre2" value="En ligne" [(ngModel)]="enLigne">
+                                    <label class="form-check-label" for="autre2" style="color:#727272">En ligne</label>
+                                  </div>
+                                  
+                                  <input type="text" class="row" *ngIf="lieuVisible" name="lieu" [(ngModel)]="lieu" id="lieu" name="salle" placeholder="Indiquez la salle" required #salleInput="ngModel" (blur)="isSalleTouched = true">
+                                  <div style="margin-left: 53%;">
+                                  <small class="alert_danger" style="text-align: center; color: red;" *ngIf="salleNotValide()">Salle est obligatoire.</small>
+                                </div>
+                                  
+                                
+                            </div>
+                         </div>
+                        <div class="row">
+                            <span >Choisir les postes</span>
+                            <select name="dep" id="dep" class="form__input"   (change)="onDepartmentSelected($event.target)" multiple >
+                                <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                            </select>
+                        </div>
+                        <input type="submit" [disabled]="(!enLigne && !enPresentiel) || salleNotValide() || formationName.invalid || !formationName.value || !tempDefni"  value="Planifier" (click)="PlanifierFormationLot()" class="btn-default" style="border-radius: 20px !important;">
+                    </form>
+                </div>
+
+            </div>
+        </div>
+
+        
+        
+  <!--popup Definir le temps-->
+  <ng-template #temps let-c="close " let-d="dismiss " class="modal-content">
+    <div class="modal-header ">
+        <h1 id="modal-basic-title ">Définir le temps</h1>
+        <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+          <span aria-hidden="true ">×</span>    
+      </button>
+    </div>
+    <div class="modal-body ">
+        <div class="container-fluid">
+          <form class="form-group animate__animated animate__backInDown">
+                <div class="date">
+                    <label for="date-debut">Début</label>
+                    <input type="date" name="date-debut" id="date-debut" style="margin-left: 64px;width:41% ;"  [(ngModel)]="dateDebut" (ngModelChange)="transformertemps()" (change)="onDateDebutChange()" required>
+                    <input type="time" name="heure"style="margin-left:5px" [(ngModel)]="heured" (ngModelChange)="transformertemps()" required>
+                </div>
+                <div class="date">
+                    <label for="date-fin">Fin</label>
+                    <input type="date" name="date-fin" id="date-fin" style="margin-left:83px;width:41%" [(ngModel)]="datefin" (ngModelChange)="transformertemps()" [min]="minDateFin" required>
+                    <input type="time" name="heuref" style="margin-left:5px"[(ngModel)]="heuref" (ngModelChange)="transformertemps()"  required>
+                
+                </div>
+                <div class="date">
+                    <label for="number">Répéter tous les</label>
+                    <input type="number" name="number" id="number" style="width: 11%; margin-right: 5px;" [(ngModel)]="nbrep" min="1" (ngModelChange)="transformertemps()"  [disabled]="disabled">
+                    <select name="répetition" id="répetition" [(ngModel)]="typerep" (ngModelChange)="transformertemps()" (ngModelChange)="onChangeRepeatType()"  [disabled]="disabled">
+                    <option value="jour" selected>Jour</option>
+                    <option *ngIf="this.dateDebut!=this.datefin" value="semaine">Semaine</option>
+                    </select>
+                </div>
+            
+                <div  class="jour-semaine" *ngIf="typerep === 'semaine'&& testrep">
+                    <div class="jour" id="lundi" (click)="onSelectDay('MONDAY')"  [class.selected]="selectedDays.includes('MONDAY')">L</div>
+                    <div class="jour" id="mardi"(click)="onSelectDay('TUESDAY')"  [class.selected]="selectedDays.includes('TUESDAY')" >M</div>
+                    <div class="jour" id="mercredi" (click)="onSelectDay('WEDNESDAY')"  [class.selected]="selectedDays.includes('WEDNESDAY')">M</div>
+                    <div class="jour" id="jeudi"(click)="onSelectDay('THURSDAY')"  [class.selected]="selectedDays.includes('THURSDAY')">J</div>
+                    <div class="jour" id="vendredi" (click)="onSelectDay('FRIDAY')" [class.selected]="selectedDays.includes('FRIDAY')">V</div>
+                    <div class="jour" id="samedi" (click)="onSelectDay('SATURDAY')" [class.selected]="selectedDays.includes('SATURDAY')" >S</div>
+                    <div class="jour" id="dimanche" (click)="onSelectDay('SUNDAY')" [class.selected]="selectedDays.includes('SUNDAY')">D</div>
+                </div>
+
+             
+                <span *ngIf="!testrep" style="color:red">{{msgRep}}</span><br>
+                <span>Se produit {{datedFormatee}}{{heuredaff}} {{nbrepaff}} {{typerepaff}}</span>
+                <span *ngFor="let day of selectedDaysfrench"> {{day}}</span>
+                <span> {{datefFormatee}} {{heurefaff}}</span>
+               
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer ">
+        <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+        <button type="button " class="btn btn-outline-success " (click)="c( 'yes') " >Enregistrer</button>
+    </div>
+    
+</ng-template>
+
+</div>
+</div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+<app-home></app-home>
+</div>

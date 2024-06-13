@@ -1,0 +1,126 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<body class="home-page">
+
+    <div class="logo">
+        <img src="../../assets/images/logotest.png">
+        <samp style="font-family: 'Montserrat', sans-serif; font-size: 0.8em; color: #38424c;">NeoLearning</samp>
+    </div>
+<!--------------------------code sign up s'inscrire---------------------------->
+
+    <div class="containerr" id="containerr" >
+        <div class="form-container sign-up-container">
+        
+            <form  name="form" (ngSubmit)="f.form.valid && onSubmit()" #f="ngForm" novalidate class="form-home">
+
+                <div *ngIf="f.submitted && isSignUpFailed" class=" alert alert-danger"> {{errorMessage}}</div>
+                <div class="alert alert-success " *ngIf="isSuccessful ">
+                    {{msg}}
+                </div>
+                <h1 class="text-form" style="color:#38424c">S'inscrire</h1>
+
+                <div class="row">
+                    <input type="text" name="firstname" [(ngModel)]="form.firstname" id="firstname" placeholder="Prénom" class="form__input" required #firstname="ngModel" (keyup.enter)="lastnameInput.focus()" [class.is-invalid]="firstname.invalid && firstname.touched" minlength="3" maxlength="20" pattern="^[a-zA-Z_ ]+" autofocus >
+                    <div *ngIf="firstname.errors && (firstname.invalid && firstname.touched && test )">
+                        <small class="alert_danger" *ngIf="firstname.errors?.['required']">Le prénom est obligatoire</small>
+                        <small class="alert_danger" *ngIf="firstname.errors?.['minlength'] || firstname.errors?.['maxlength']">Le prénom doit contenir au moins 3 caractères et au plus 20 caractères</small>
+                        <small class="alert_danger" *ngIf="firstname.errors?.['pattern']">Le prénom est invalide, seules les lettres, les espaces et les underscores (_) sont autorisés.<br> </small>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <input type="text" [(ngModel)]="form.lastname" name="lastname" id="lastname" placeholder="Nom" class="form__input" required #lastname="ngModel" #lastnameInput (keyup.enter)="passwordInput.focus()"[class.is-invalid]="lastname.invalid && lastname.touched" minlength="3" maxlength="20" pattern="^[a-zA-Z_ ]+" >
+                    <div *ngIf="lastname.errors && (lastname.invalid && lastname.touched && test)">
+                        <small class="alert_danger " *ngIf="lastname.errors?.[ 'required'] ">Le nom est obligatoire</small>
+                        <small class="alert_danger" *ngIf="lastname.errors?.['minlength'] || lastname.errors?.['maxlength']">Le nom doit contenir au moins 3 caractères et au plus 20 caractères.</small><br>
+                        <small class="alert_danger" *ngIf="lastname.errors?.['pattern']">Le nom est invalide, seules les lettres, les espaces et les underscores (_) sont autorisés.<br> </small>
+
+                    </div>
+                </div>
+                <div class="row">
+                    <input type="text" [(ngModel)]="form.username" name="username " id="username "  placeholder="Nom d'utilisateur (prenom.nom)" class="form__input" #username="ngModel" #usernameInput readonly [value]="generateUsername()" >
+                </div>
+
+                <div class="row">
+                    <input type="email" [(ngModel)]="form.email" name="email" id="email" placeholder="Email (prenom.nom@neoxam.com)"  class="form__input"  email #email="ngModel" #emailInput  [value]="generateEmail()" readonly >
+                </div>
+                <div class="row ">
+                    <input type="password" name="password" id="password" placeholder="Mot de passe (minimum 8 caractères)" class="form__input" [(ngModel)]="form.password"  minlength="8" maxlength="20" #password="ngModel" #passwordInput (keyup.enter)="CpasswordInput.focus()" required>
+                </div>
+                <div *ngIf="password.errors && (password.invalid && password.touched && test)">
+                    <small class="alert_danger" *ngIf="password.errors?.['required']">le mot de passe est obligatoire</small>
+                    <small class="alert_danger" *ngIf="password.errors?.['minlength']||password.errors?.['maxlength']">le mot de passe doit contenir au moins 8 caractères et au plus 20.</small>
+                </div>
+                <div class="row ">
+                    <input type="password" ngModel name="CPassword" id="CPassword" placeholder="Confirmer votre mot de passe" class="form__input" required minlength="8" [(ngModel)]="form.CPassword" #CPassword="ngModel" #CpasswordInput [class.is-invalid]="CPassword.invalid && CPassword.touched">
+                </div>
+                <div *ngIf="CPassword.errors && (CPassword.invalid && CPassword.touched && test) || (password.value!=CPassword.value)">
+                    <small class="alert_danger" *ngIf="password.errors?.['required']">le mot de passe est obligatoire</small>
+                    <small class="alert_danger" [class.d-none]="(password.value==CPassword.value)||CPassword.untouched">les deux mots de passe ne sont pas identiques</small>
+                </div>
+
+                <div class="row ">
+                    <select name="poste" id="poste" class="form__input" [(ngModel)]="form.poste" required #poste="ngModel">
+                        <option value="" disabled>Choisissez votre poste</option>
+                        <option *ngFor="let department of departments" [value]="department.name">{{ department.name }}</option>
+                      </select>
+                    <div *ngIf="poste.errors && (poste.invalid && poste.touched && test)">
+                        <small class="text-danger" *ngIf="poste.errors?.['required']">Le poste est obligatoire</small>
+                    </div>
+                </div>
+                <input [disabled]="f.form.invalid" type="submit" value="créer" class="btn-default" >
+
+            </form>
+        
+            
+        </div>
+            
+            
+
+
+        <!--------------------------login s'authentifier---->
+
+        <div class="form-container sign-in-container">
+            <form  name="formin" (ngSubmit)="fi.form.valid && onSubmitin()" #fi="ngForm" novalidate class="form-home">
+                <h1 class="text-form" style="color:#38424c">Connexion</h1>
+                <small *ngIf="errorMessage!='' && fi.submitted && isLoginFailed" class="alert_danger">{{errorMessage}}</small>
+                <input type="text " [(ngModel)]="formin.usernameIN " name="usernameIN "  #usernameInputIN  id="usernameIN " placeholder="Nom d'utilisateur (prenom.nom)"  (keyup.enter)="passwordInputIN.focus()" class="form__input" required #usernameIN="ngModel" [class.is-invalid]="usernameIN.invalid && usernameIN.touched"
+                pattern="^[a-zA-Z_]+\.[a-zA-Z_]+$">
+                <div *ngIf="usernameIN.errors && (usernameIN.invalid && usernameIN.touched)">
+                    <small class="alert_danger" *ngIf="usernameIN.errors?.['required']">Le nom d'utilisateur est obligatoire</small>
+                    <small class="alert_danger" *ngIf="usernameIN.errors?.['pattern']">Le nom d'utilisateur n'est pas valide<br> </small>
+                </div>
+
+                <input type="password" name="passwordIN" #passwordInputIN id="passwordIN" placeholder="Mot de passe"  class="form__input" [(ngModel)]="formin.passwordIN" required minlength="8" #passwordIN="ngModel">
+                <div *ngIf="passwordIN.errors && (passwordIN.invalid && passwordIN.touched)">
+                    <small class="alert_danger" *ngIf="passwordIN.errors?.['required']">Le mot de passe est obligatoire</small>
+                    <small class="alert_danger" *ngIf="passwordIN.errors?.['minlength']">Le mot de passe entré est incorrect</small>
+                </div>
+                <div style="display: flex; flex-direction:row ;height:17px;margin-top: 9px;">
+                <input type="checkbox" (change)="togglePasswordVisibility()" style="width:10%;accent-color: #0ed8b8;"> 
+                <span style="TEXT-ALIGN: START;width: 100%;FONT-SIZE: 14px;margin-left: 6px;">Voir mot de passe</span> 
+                </div>
+                <input [disabled]="fi.form.invalid" type="submit" value="S'authentifier" class="btn-default">
+                <p><a routerLink="/forgotpassword" routerLinkActive="active" class="forgot-pass">Mot de passe oublié?</a></p>
+            </form>
+        </div>
+
+
+
+
+        <div class="overlay-container">
+            <div class="overlay">
+                <div class="overlay-panel overlay-left">
+                    <h1 class="text-form">Bienvenue!</h1>
+                    <button class="ghost" id="signIn">Se Connecter</button>
+                </div>
+                <div  class="overlay-panel overlay-right">
+                    <h1 class="text-form">Bienvenue!</h1>
+                    <button class="ghost" id="signUp">S'inscrire</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+</body>

@@ -1,0 +1,770 @@
+<div class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong>Liste des formations</strong></h1>
+            </div>
+            <div class="panel-body ">
+                <div  class="search-hero mat-form-field">
+                <div style="display: inline-block;">
+
+                    <i class='bx bx-slideshow' matTooltip="Formation Crée" (click)="showformationsC()"></i>
+
+                    <i class='bx bxs-slideshow' (click)="showformationsP()" matTooltip="Formations Planifiée"></i>
+
+                    <i class='bx bxs-package'(click)="showLotP()" matTooltip="Lots Planifié" ></i>
+
+                    <i class='bx bx-user-pin'(click)="showusers()" matTooltip="En fonction de participant"></i>
+
+                </div>
+
+            </div>
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="valid" class=" alert alert-success"> {{messagevalid}}</small> 
+                </div>
+
+                <!--showuserpage-->
+                <div *ngIf="showuser">
+                    <div class="table-responsive showform">
+                        <table class="table table-striped ">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:3% "></th>
+                                    <th style="width:3% "></th>
+                                    <th style="width:12% ">Utilisateur</th>
+                                    <th style="width:10% ">Formations</th>
+                                    <th style="width:10% ">Date limite</th>
+                                    <th style="width:10% ">Poste</th>
+                                    <th style="width:10% ">Role</th>
+                                    <th style="width:8% ">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of tableusers; let i = index">
+                                    <td>{{i+1}}</td>
+                                    <td><img class="userimage" [src]="user.p" alt="Photo de profil"></td>
+                                    <td>{{ user.username }}</td>
+                                    <td>{{user.formations?.[0]?.formation?.name}}</td>
+                                    <td>{{user.formations?.[0]?.endDate | date:'dd/MM/yyyy HH:mm' }}</td>
+                                    <td>{{ user.poste }}</td>
+                                    <td>{{ user.roles[0]?.name }}</td>
+                                    <td>
+                                        <i class='bx bx-show' (click)="openuserdetails(contentdetailsuser,user.id)"></i>
+                                        <i class='bx bx-edit-alt' (click)="openusermodification(contentModificationuser,user.id)" *ngIf="showAdminBoard"></i>
+                                        <i class='bx bx-trash-alt' (click)="opensupuser(contente,user.id)" *ngIf="showAdminBoard" ></i>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+
+
+                <!--showFormationPlanifier-->
+                <div *ngIf="showformationP">
+                    <div class="table-responsive showform" >
+                        <table class="table table-striped" >
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:3% ">#</th>
+                                    <th style="width:18% " (click)="sortTable()" id="Pointer">Nom</th>
+                                    <th style="width:18% ">Formateur</th>
+                                    <th style="width:18% "  (click)="sortTableByDateDebut()" id="Pointer">Date de début</th>
+                                    <th style="width:18% ">Date Limite</th>
+                                    <th style="width:10% ">Description</th>
+                                    <th style="width:8% ">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let element of tableFormationP; let i = index ">
+                                    <td>{{i+1}}</td>
+                                    <td>{{ element.formation.name }}</td>
+                                    <td>{{element.formateur.username}}</td>
+                                    <td>{{ element.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                    <td>{{ element.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                    <td>{{ element.description}}</td>
+                                    <td> 
+                                        <i class='bx bx-show'(click)="openType(element,contentdetailform)"></i>
+                                        <i class='bx bx-edit-alt' (click)="openeditform(element.id)" *ngIf="showAdminBoard" ></i>
+                                        <i class='bx bx-trash-alt' (click)="opensupform(content,element.id)"*ngIf="showAdminBoard" ></i>
+                                            
+                                    </td>
+                                   
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+ <!--showLotsPlanifier-->
+ <div *ngIf="showLotsP">
+    <div class="table-responsive showform" >
+        <table class="table table-striped" >
+            <thead>
+                <tr disabled>
+                    <th style="width:4% ">#</th>
+                    <th style="width:20% " (click)="sortTable()" id="Pointer">Nom</th>
+                    <th style="width:20% "  (click)="sortTableByDateDebut()" id="Pointer">Date de début</th>
+                    <th style="width:20% ">Date Limite</th>
+                    <th style="width:20% ">Formation</th>
+                    <th style="width:10% ">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let element of tableLot; let i = index ">
+                    <td>{{i+1}}</td>
+                    <td>{{ element.name }}</td>
+                    <td>{{ element.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td>{{ element.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                    <td ><span *ngFor="let form of element.formationsPlan | slice:0:2; let last=last">{{form.formation.name}}                           
+                      <ng-container *ngIf="last && element.formationsPlan.length > 2">...</ng-container>
+                    </span></td>
+                    <td> 
+                        
+                        <i class='bx bx-show' (click)=" opendetaillot(element.id)"></i>
+                        <i class='bx bx-user' (click)="openListPartLot(openlistparticipant,element.id)"></i>    
+                        <i class='bx bx-edit-alt' (click)="openeditlot(element.id)" *ngIf="showAdminBoard" ></i>
+                        <i class='bx bx-trash-alt' (click)="opensupLot(contentLot,element.id)" *ngIf="showAdminBoard" ></i>
+                    </td>
+                   
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!--popup pour la liste des participant de lot -->
+<ng-template #openlistparticipant let-c="close " let-d="dismiss " class="modal-content">
+    <div class="modal-header ">
+        <h4 id="modal-basic-title ">Les participants</h4>
+        <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+          <span aria-hidden="true ">×</span>    
+      </button>
+    </div>
+    <div class="modal-body ">
+        <div class="container-fluid">
+            <form class="form-group animate__animated animate__backInDown" id="form-details">
+                <table class="table table-striped list " style="width: 100%;">
+                    <thead>
+                        <tr disabled>
+                            <th style="width:13.2%">Les participant</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        
+                        <tr *ngFor="let participant of SelectedviewLot.participants" >
+                            <td><img class="userimage" [src]="participant.p" alt="Photo de profil" style="margin-right: 20px;">
+                            {{ participant.username }}</td> 
+                          </tr>
+                    </tbody>
+                </table>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer ">
+        <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+    </div>
+</ng-template>
+             <!--showFormationCrée-->
+             <div *ngIf="showformationC">
+                <div class="table-responsive showform">
+                    <table class="table table-striped" >
+                        <thead>
+                            <tr disabled>
+                                <th style="width:4% ">#</th>
+                                <th style="width:20% " (click)="sortTable()" id="Pointer">Nom</th>
+                                <th style="width:20% ">Formateur</th>
+                                <th style="width:20% ">Poste</th>
+                                <th style="width:9% ">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let element of tableFormationC  let i = index">                      
+                                   <td>{{i+1}}</td>
+                                <td>{{ element.name }}</td>
+                                <td>{{element.formateur.username}}</td>
+                                <TD><span *ngFor="let dep of element.departments">{{dep.name}}</span></TD>
+                                <td>
+                                    <i class='bx bx-file-blank icon' (click)="openlistDoc(openlistdoc,element.documents)"></i>
+                                    <i class='bx bx-edit-alt' (click)="openeditformcree(contenteditformcree,element)"*ngIf="showAdminBoard" ></i>
+                                    <i class='bx bx-trash-alt' (click)="opensupformc(content,element.id)" *ngIf="showAdminBoard"></i>
+                                    <img src="../../../assets/images/zoom-in.png" (click)="showdetailform(element.id)" style="margin-left: 10px;margin-bottom: 8PX;">
+                                 </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+        <ng-template #openlistdoc let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Les documents associés</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <table class="table table-striped list" style="width: 100%;">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:13.2%">Les documents</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let document of SelectedDocs">
+                                    <td>
+                                      <div class="view-wrapper">
+                                        <span class="doc-icon"><i class='bx bxs-file-doc'></i></span>
+                                        <span class="doc-name">{{ document.name.length > 20 ? document.name.slice(0, 12) + '...' : document.name }}</span>
+                                        <span class="download-icon"><i class='bx bxs-download' (click)="download(document.id, document.name)"></i></span>
+                                      </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+            </div>
+        </ng-template>
+              <!--popup sup formation-->
+              <ng-template #content let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Supprimer une formation</h4>
+                  <button type="button" class="close_btn" aria-label="Close" (click)="d('Cross click')">    
+                    <span aria-hidden="true">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Êtes-vous sûr de vouloir supprimer  cette formation ?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Annuler</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="c('yes')">Supprimer</button>
+                </div>
+            </ng-template>
+        
+           <!--popup sup tous les formation de ce participant-->
+            <ng-template #contente let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Supprimer la participation</h4>
+                  <button type="button" class="close_btn" aria-label="Close" (click)="d('Cross click')">    
+                    <span aria-hidden="true">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    Êtes-vous sûr de vouloir supprimer toutes les participations de cet utilisateur dans toutes les formations ?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Annuler</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="c('yes')">Supprimer</button>
+                </div>
+            </ng-template>
+
+            <!--popup sup Lot-->
+            <ng-template #contentLot let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Supprimer un lot </h4>
+                  <button type="button" class="close_btn" aria-label="Close" (click)="d('Cross click')">    
+                    <span aria-hidden="true">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Êtes-vous sûr de vouloir supprimer ce lot ?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Annuler</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="c('yes')">Supprimer</button>
+                </div>
+            </ng-template>
+        
+           <!--popup sup tous les formation de ce participant-->
+            <ng-template #contente let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Confirmation</h4>
+                  <button type="button" class="close_btn" aria-label="Close" (click)="d('Cross click')">    
+                    <span aria-hidden="true">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>
+                    Êtes-vous sûr de vouloir supprimer toutes les participations de cet utilisateur dans toutes les formations ?
+                  </p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Annuler</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="c('yes')">Supprimer</button>
+                </div>
+            </ng-template>
+
+             <!--popup sup formation de user-->
+             <ng-template #contentsupformdeuser let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Confirmation</h4>
+                  <button type="button" class="close_btn" aria-label="Close" (click)="d('Cross click')">    
+                    <span aria-hidden="true">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Êtes-vous sûr de vouloir supprimer la participation de cet utilisateur à cette formation ?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Annuler</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="c('yes')">Supprimer</button>
+                </div>
+            </ng-template>
+
+
+           <!--popup details user-->
+           <ng-template #contentdetailsuser let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Détails d'utilisateur</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group " id="form-details">
+                        <div class="form-group" >
+                            <input type="text" class="form__input U" id="username" placeholder="Nom utilisateur : {{SelctedUser.username}}" disabled>
+                            <input type="text" class="form__input U" id="poste" placeholder="Poste : {{SelctedUser.poste}}" disabled>
+                            <input type="text" class="form__input U" id="role" placeholder="Role : {{SelctedUser.roles[0].name}}" disabled>
+                        </div>
+                        <table class="table table-striped userdetails">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width: 1%;" >#</th>
+                                    <th style="width: 1%;">Nom formation</th>
+                                    <th style="width: 1%;">Date de début</th>
+                                    <th style="width: 1%;">Date limite</th>  
+                                    <th style="width: 1%;">Formateur</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let plan of SelctedUserPlanning , let i=index" >
+                                     <td>{{i+1}}</td>
+                                     <td> {{ plan.formation.name }}</td>
+                                    <td> {{ plan.startDate| date:'dd/MM/yyyy HH:mm' }}</td>
+                                    <td> {{ plan.endDate| date:'dd/MM/yyyy HH:mm' }}</td>
+                                    <td> {{ plan.formateur.username }}</td>
+                                  </tr>
+                               
+                                
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+            </div>
+        </ng-template>
+
+
+            <!--popup modifier user-->
+            <ng-template #contentModificationuser let-c="close " let-d="dismiss " class="modal-content">
+                <div class="modal-header ">
+                    <h4 id="modal-basic-title ">Modification d'utilisateur</h4>
+                    <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                      <span aria-hidden="true ">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container-fluid">
+                        <form class="form-group animate__animated animate__backInDown" id="form-details">
+                            <div class="form-group" >
+                                <input type="text" class="form__input U" id="username" placeholder="{{SelctedUser.username}}" disabled>
+
+                                <input type="text" class="form__input U" id="poste" placeholder="{{SelctedUser.poste}}" disabled>
+                                <input type="text" class="form__input U" id="role" placeholder="{{SelctedUser.roles[0].name}}" disabled>
+                            </div>
+                            <table class="table table-striped userdetails">
+                                <thead>
+                                    <tr disabled>
+                                        <th style="width:1% ">#</th>
+                                        <th style="width:1% ">Nom formation</th>
+                                        <th style="width:1% ">Date de début</th>
+                                        <th style="width:1% ">Date limite</th>   
+                                        <th style="width:1% ">Formateur</th>
+                                        <th style="width:1% ">Supprimer</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                   
+                                        <tr *ngFor="let plan of SelctedUserPlanning , let i=index" >
+                                            <td>{{i+1}}</td>
+                                            <td> {{ plan.formation?.name }}</td>
+                                           <td> {{ plan.startDate| date:'dd/MM/yyyy HH:mm' }}</td>
+                                           <td> {{ plan.endDate| date:'dd/MM/yyyy HH:mm' }}</td>
+                                           <td> {{ plan.formateur.username }}</td> 
+                                           <td><i class='bx bx-trash-alt min' (click)="opensupuformdeuser(contentsupformdeuser,contentModificationuser ,plan.id,SelctedUser.id)" ></i></td>
+                                         </tr>
+                                      
+                                    
+                                    
+                                        
+                                </tbody>
+                            </table>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-info" (click)="c('delete')">Enregistrer</button>
+                </div>
+            </ng-template>
+
+
+            <!--popup details formation Plan-->
+            <ng-template  #contentdetailform let-c="close " let-d="dismiss " class="modal-content">
+                <div class="modal-header ">
+                    <h4 id="modal-basic-title ">Détails de la formation</h4>
+                    <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                      <span aria-hidden="true ">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container-fluid">
+                        <form class="form-group animate__animated animate__backInDown" id="form-details">
+                            <div class="form-group" >
+                                <div class="row">                              
+                                    <input type="text" class="form__input D" id="lot" placeholder="Formation : {{Selectedviewelement.formation.name}}" disabled >
+                                </div>
+                                <div class="row">
+                                    
+                                    <input type="text" class="form__input D" id="formateur" placeholder="Formateur : {{Selectedviewelement.formateur.username}}" disabled>
+                                </div>
+                                <div class="row">
+                                    
+                                    <input type="text" class="form__input D" id="date-début" placeholder="Date début: {{Selectedviewelement.startDate | date:'dd/MM/yyyy HH:mm'}}" disabled>
+                                </div>
+                                <div class="row">
+                                    <input type="text" class="form__input D" id="date-limite" placeholder="Date de fin : {{Selectedviewelement.endDate | date:'dd/MM/yyyy HH:mm'}}" disabled>
+                                </div>
+                                
+                                <div class="row">
+                                   
+                                    <input type="text" class="form__input D" id="Description" placeholder="Description : {{Selectedviewelement.description}}" disabled>
+                                </div>
+                                <div class="row">
+                                   
+                                    <input type="text" class="form__input D" id="Autre" placeholder="Autre : {{Selectedviewelement.localisation}}" disabled>
+                                </div>
+                                <div class="row">
+                                    <label style="padding: 8px 22px;color:#757575">Ses postes :</label>
+                                  <li *ngFor="let dep of Selectedviewelement.departements" style="padding: 2px 50px;color:#757575"> {{dep.name}}</li>
+                                </div>
+                            </div>
+                            <br>
+                            <table class="datedetails">
+                                <thead>
+                                  <tr disabled>
+                                    <th style="width: 1%;">Date</th>
+                                    <th style="width: 1%;">heure de debut  </th>
+                                    <th style="width: 1%;">heure de fin </th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  <tr *ngFor="let interval of intervalsOfSelectedviewelement">
+                                    <td> {{ interval[0] | date:'dd/MM/yyyy' }}</td>
+                                    <td> {{ interval[0] | date:'HH:mm' }}</td>
+                                    <td> {{ interval[1] | date:'HH:mm' }}</td>
+                                  </tr>
+                                </tbody>
+                            </table>
+                            
+                            <table class="table table-striped detailsform">
+                                <thead>
+                                    <tr disabled>
+                                        
+                                        <th style="width:13.2% ">Les participants</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                          
+                                         <span *ngFor="let participant of Selectedviewelement.participants"> <img class="userimage" [src]="participant.p" alt="Photo de profil" style="margin-right: 20px;">{{ participant.username.length > 20 ? participant.username.slice(0,12) + '...' : participant.username }}</span>
+
+                                        </td>
+                                    </tr>
+                        
+                                </tbody>
+                            </table>
+                            <table class="table table-striped detailsform">
+                                <thead>
+                                    <tr disabled>
+                                        <th style="width:13.2%">Les documents</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr  *ngFor="let doc of Selectedviewelement.documents" >
+                                        <td>
+                                            <div class="view-wrapper">
+                                                <img class="docimage"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file">
+                                                <img class="docimage" *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file">
+                                                <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file ">
+                                                <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file ">
+                                                <img class="docimage" *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file ">
+                                                <img class="docimage" *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " >
+                                                <img class="docimage" *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file ">
+                                                <img class="docimage" *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"src="assets/images/file-inconnu.png"  alt="file">
+                                                <span class="doc-name">{{ doc.name.length > 20 ? doc.name.slice(0, 12) + '...' : doc.name }}</span>
+                                                <i class='bx bxs-download' (click)="download(doc.id,doc.name)"></i>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                   
+                                </tbody>
+                            </table>
+                        </form>
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+                </div>
+            </ng-template>
+              
+             <!--popup add doc-->
+         <ng-template #adddoc let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Ajouter des documents</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <div class="search-hero mat-form-field" >
+                            <select name="filtre" id="filtre" filtre  class="filter-list"  required #filtre="ngModel" [(ngModel)]="formSearch.filtre">
+                                <option  value="nom-doc">Titre</option>
+                                <option value="tag">Tag</option>
+                                <option value="poste">Poste</option>
+                            </select>
+                            <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;" (input)="Search()" [(ngModel)]="formSearch.rech"  name="rech" filtre></div>
+                            <table class="table table-striped popupajout">
+                                <thead>
+                                    <tr disabled>
+                                        <th style="width:3% ">Type</th>
+                                        <th style="width:3% ">Titre</th>
+                                        <th style="width:3% ">Tag</th>
+                                        <th style="width:3% ">Poste</th>
+                                        <th style="width:3% ">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let doc of documents ,filter:searchText , let i=index ">
+                                        <td>
+                                        
+                                            <img class="docimage"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file">
+                                            <img class="docimage " *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file">
+                                            <img class="docimage " *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file ">
+                                            <img class="docimage " *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file ">
+                                            <img class="docimage " *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file ">
+                                            <img class="docimage " *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " >
+                                            <img class="docimage " *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file ">
+                                            <img class="docimage " *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                                src="assets/images/file-inconnu.png"  alt="file">
+                                        
+                                        </td>
+                                        <td>{{ doc.name.length > 20 ? doc.name.slice(0, 20) + '...' : doc.name }}</td>
+                                        <td>
+                                            <p *ngFor="let lib of doc.tags.slice(0, 2) ">
+                                                - {{ lib.libelle }}
+                                            </p>
+                                        </td>
+                                        <td> <p *ngFor="let department of doc.departments.slice(0, 2)">
+                                            {{ department.name }}
+                                          </p>
+                                        </td>
+                                       <td ><i [ngClass]="doc.showIcon ? 'bx bx-check-square' : 'bx bx-rectangle'" (click)="toggleIcon(doc)"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                    </form>
+
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Ajouter</button>
+            </div>
+        </ng-template>
+
+         <!--popup add user-->
+         <ng-template #adduser let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h1 id="modal-basic-title ">Ajouter des participants</h1>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <div class="search-hero mat-form-field" >
+                            <select name="filtre" id="filtre " filre  class="filter-list"  required >
+                                <option  value="nom"selected >Nom</option>
+                                <option value="role">Role</option>
+                                <option value="poste">Poste</option>
+                            </select>
+                            <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;" Filtre></div>
+                        <table class="table table-striped popupajout">
+                            <thead>
+                                <tr disabled>
+                                   
+                                    <th style="width:3% ">Photo</th>
+                                    <th style="width:3% ">Nom utilisateur</th>
+                                    <th style="width:3% ">Poste</th>
+                                    <th style="width:3% ">Role</th>
+                                    <th style="width:3% ">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of users | async ; let i = index" >
+                                    
+                                    <td><img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}"></td>
+                                    <td>{{user.username}}</td>
+                                    <td>{{user.poste}}</td>
+                                    <td>
+                                        <div *ngFor="let role of user.roles">
+                                            {{role.name}}
+                                        </div>
+                                    </td>
+                                    <td><i [ngClass]="user.showIcon ? 'bx bxs-check-square' : 'bx bx-check-square'" (click)="toggleIcon2(user)"></i></td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </form>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Ajouter</button>
+              <button type="button" class="btn btn-outline-danger" (click)="c('delete')">Supprimer</button>
+            </div>
+        </ng-template>
+
+
+
+         <!--popup doc view pour formC -->
+         <ng-template #openlistdoc let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h1 id="modal-basic-title ">les documents associés</h1>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <table class="table table-striped list" style="width: 100%;">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:13.2%">Les documents</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let document of SelectedDocs">
+                                   <td><i class='bx bxs-file-doc'></i>{{document.name}}<i class='bx bxs-download'  (click)="download(document.id,document.name)"></i></td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+            </div>
+        </ng-template>
+
+         <!--popup edit formation cree-->
+         <ng-template  #contenteditformcree let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Modification de la formation</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <div class="form-group" >
+                            <div>                              
+                                <input type="text" class="form__input" id="formation" name="formationName"  value="{{SelectedFormation.name}}" [(ngModel)]="newName" >
+                            </div>
+
+                            <div class="row">
+                                <input  id="selectcreer" type="text" name="nameoftrainer" class="form__input" [(ngModel)]="searchText" (input)="filterTrainers()" [(ngModel)]="selectedTrainer" >
+                                    <ul id="scroltrainer">
+                                          <li *ngFor="let user of filtertrainers let i = index" (click)="selectTrainer(user)"><img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}">{{user.username }}</li>
+                                    </ul>
+                            </div>
+                        
+                            <div class="row">
+                                
+                                <select class="detailsform"  name="dep" id="depcreer" class="form__input"   (change)="onDepartmentSelected($event.target)" multiple >
+                                    <option value="" disabled>Choisir un poste</option>
+                                    <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                                </select>
+                            </div>
+                            
+                            
+                        </div>
+                        <table class="table table-striped detailsform Creer">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:13.2%" >Les documents<i class='bx bx-plus-circle' (click)="openadddoc(adddoc)" style="margin-left: 5px;"></i></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let doc of showselectedfile">
+                                    <td>
+                                      <div class="view-wrapper">
+                                        <img class="doc-icon"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file">
+                                        <img class="doc-icon" *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file">
+                                        <img class="doc-icon" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file ">
+                                        <img class="doc-icon" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file ">
+                                        <img class="doc-icon" *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file ">
+                                        <img class="doc-icon" *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " >
+                                        <img class="doc-icon" *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file ">
+                                        <img class="doc-icon" *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"src="assets/images/file-inconnu.png"  alt="file">
+                                        <span class="doc-name">{{ doc.name.length > 20 ? doc.name.slice(0, 12) + '...' : doc.name }}</span>
+                                        <span class="download-icon"><i class='bx bx-trash-alt'(click)="delet(doc)"></i></span>
+                                      </div>
+                                    </td>
+                                </tr>
+                              
+                            </tbody>
+                        </table>
+                    </form>
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+                <button type="button" class="btn btn-outline-info" (click)="c('yes')">Enregistrer</button>
+
+            </div>
+        </ng-template>   
+       
+
+    </div>
+</div>
+
+
+
+
+
+           

@@ -1,0 +1,128 @@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.2/css/all.min.css" />
+<ng-template #loggedOut>
+    S'il vous plait login.
+</ng-template>
+
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="profile container">
+    
+    <app-dashboard></app-dashboard>
+   
+    <div class="row main-content ">
+        
+        <div class="col-md-4 company__info box">
+
+            <div class="photo-update">
+              
+                <img  class="img-responsive"  [src]="profilePhotoUrl">
+                <div>
+                    <label for="file-input"style="margin-top:4px ;">
+                        <i class='bx bx-edit-alt' id="edit_photo"></i>
+                    </label>
+                        
+                    <input type="file" id="file-input" style="display:none;" (change)="onFileSelected($event)">
+                    <i class='bx bx-trash-alt'id="delet_photo" (click)="deleteimage()"></i></div>
+            </div>
+        </div>
+        <div class="col-md-8 col-xs-12 col-sm-12 login_form">
+
+            
+            <div class="card">
+                <small *ngIf="test" class=" alert alert-success" style="text-align: center;"> {{msg}}</small>
+                <small *ngIf="errortest" class=" alert alert-danger" style="text-align: center;"> {{errormsg}}</small>
+
+                <div class="panel panel-primary container-fluid">
+
+                    <div class=" panel-heading ">
+                        <h1 ><strong>Mon profil</strong></h1>
+                        <hr/><br>
+                    </div>
+                    <div class="panel-body ">
+                        <div class="container3" *ngIf="currentUser; else loggedOut" >
+                            <p>
+                                <strong>Nom d' utilisateur : </strong>{{ user.username }}
+                            </p>
+                            <p>
+                                <strong>Nom : </strong> {{ user.lastname }}
+                            </p>
+                            <p>
+                                <strong>Prénom : </strong> {{ user.firstname }}
+                            </p>
+                            <p>
+                                <strong>Email : </strong> {{ user.email }}
+                            </p>
+                            <p>
+                                <strong>Poste : </strong> {{ user.poste}}
+                            </p>
+                            <p>
+                                <strong>Role : </strong> {{ role }}
+                            </p>
+
+                            
+                            <button (click)="opene(contente) " href="javascript:void(0); " class="btn btn-outline-info " id="modifier" style="margin-top: 10px;">Modifier</button>
+
+                            <ng-template #contente let-c="close " let-d="dismiss " class="modal-content">
+                                <div class="modal-header ">
+                                    <h4  id="modal-basic-title ">Modification</h4>
+                                    <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                                      <span aria-hidden="true ">×</span>    
+                                  </button>
+                                </div>
+                                <div class="modal-body ">
+                                    <div class="container-fluid">
+                                        <form class="form-group" id="form-edit">
+                                            <div class="form-group" >
+                                                
+
+                                                
+                                                <input type="text" class="form__input" id="firstname"  required [(ngModel)]="user.firstname" name="firstname" [class.is-invalid]="firstname.invalid && firstname.touched" minlength="3" maxlength="20" pattern="^[a-zA-Z_ ]+" #firstname="ngModel">
+                                                <div *ngIf="firstname.errors && (firstname.invalid && firstname.touched)">
+                                                    <small class="text-danger" *ngIf="firstname.errors?.['required']">le prénom est obligatoire</small>
+                                                    <small class="text-danger" *ngIf="firstname.errors?.['minlength'] || firstname.errors?.['maxlength']">le prénom doit contenir au moins 3 caractères et au plus 20 caractères</small>
+                                                    <small class="text-danger" *ngIf="firstname.errors?.['pattern']">Le prénom est invalide, seules les lettres , les espaces et les underscores (_) sont autorisés<br> </small>
+                                                </div>
+ 
+                                                <input type="text" class="form__input" id="lastname" required [(ngModel)]="user.lastname" name="lastname" [class.is-invalid]="lastname.invalid && lastname.touched" minlength="3" maxlength="20" pattern="^[a-zA-Z_ ]+" #lastname="ngModel" >
+                                                <div *ngIf="lastname.errors && (lastname.invalid && lastname.touched)">
+                                                    <small class="text-danger " *ngIf="lastname.errors?.[ 'required'] ">le nom est obligatoire</small>
+                                                    <small class="text-danger" *ngIf="lastname.errors?.['minlength'] || lastname.errors?.['maxlength']">le nom doit contenir au moins 3 caractères et au plus 20 caractères</small>
+                                                    <small class="text-danger" *ngIf="lastname.errors?.['pattern']">Le nom est invalide, seules les lettres , les espaces et les underscores (_) sont autorisés<br> </small>
+                                                </div>
+
+                                          
+                                                <input type="text" class="form__input" id="username" [(ngModel)]="user.username" name="username"   #username="ngModel" [value]="generateUsername()" readonly >
+        
+                                                <input type="text" class="form__input" id="email"  [(ngModel)]="user.email" name="email" email #email="ngModel" [value]="generateEmail()" readonly >
+                                                
+                                                <input *ngIf="(showformateurBoard || showuserBoard)&& !showAdminBoard" type="text" class="form__input" id="poste" [(ngModel)]="user.poste" name="poste" poste #poste="ngModel" [value]="user.poste" readonly >
+                                                <div class="row " *ngIf="showAdminBoard">
+                                                    <select name="poste" id="poste" class="form__input" [(ngModel)]="user.poste" required #poste="ngModel" >
+                                                    <option *ngFor="let department of departments" [value]="department.name">{{ department.name }}</option>
+                                                    </select>
+                                                </div>
+
+
+                                                <div class="row">
+                                                    
+                                                    <input disabled type="text"  id="role" required [(ngModel)]="role" name="role">
+                                                </div>
+
+                                            </div>
+                                        </form>
+
+                                    </div>
+                                </div>
+                                <div class="modal-footer ">
+                                    <button type="submit" class="btn btn-outline-secondary" (click)="d( 'Cross click') " style=" margin-right: 10px ">Annuler</button>
+                                    <button (click)="c( 'yes')" href=" javascript:void(0); " type="submit " class="btn btn-outline-info" [disabled]="!firstname.valid || !lastname.valid">Enregistrer</button>
+                                </div>
+                            </ng-template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

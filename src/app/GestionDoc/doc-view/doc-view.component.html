@@ -1,0 +1,231 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong>Liste des documents</strong></h1>
+            </div>
+            <div class="panel-body ">
+                <div  class="search-hero ">
+                    <select name="filtre" id="filtre " filtre  class="filter-list"  required #filtre="ngModel" [(ngModel)]="formSearch.filtre">
+                        <option value="titre">Titre</option>
+                        <option value="type">Type</option>
+                        <option value="dep">Poste</option>
+                        <option value="tag">Tag</option>
+                    </select>
+                    <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;" (input)="Search()" [(ngModel)]="formSearch.rech"  name="rech" Filtre>
+                    <i class='bx bx-dice-6' (click)="Icone()" matTooltip="Mode Icône"></i>
+                    <i class='bx bx-dots-vertical-rounded'(click)="Contenue()" matTooltip="Mode Tableau"></i>
+                </div>
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="test" class=" alert alert-success"> {{message}}</small> 
+                </div>
+                <div *ngIf="showicon ">
+                    <div class="cardd" *ngFor="let doc of documents | async">
+                        
+                        <span>
+                            <img class=" delete"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file" (click)="afficher(doc.id)">
+                            <img class="delete " *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file" (click)="afficher(doc.id)">
+                            <img class="delete " *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file " (click)="afficher(doc.id)">
+                            <img class="delete " *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file " (click)="afficher(doc.id)">
+                            <img class="delete " *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zipp.png"  alt="file " (click)="afficher(doc.id) ">
+                            <img class="delete " *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " (click)="afficher(doc.id)">
+                            <img class="delete " *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file " (click)="afficher(doc.id) ">
+                            <img class="delete " *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                src="assets/images/file-inconnu.png"  alt="file " (click)="afficher(doc.id) ">
+                        </span>
+                        <span><div class="info ">
+                            <br>
+                            
+                                <div>
+                                    <h4 class="name">{{ doc.name.length > 20 ? doc.name.slice(0, 20) + '...' : doc.name }}</h4>
+                                </div>
+                                <ng-template  #moins> <h4 class="name ">
+                                    {{ doc.name }}
+                                </h4>
+                                </ng-template>
+                                <div class="start">
+                           
+                                    <p class="size ">
+                                        <b>Poste :</b> 
+                                    </p>
+                                    
+                                    <p class="size " *ngFor="let department of doc.departments.slice(0, 2)">
+                                        {{ department.name }}
+                                      </p>
+                                    <br>
+                                    <p class="size "><b>Tags :</b> </p>
+                                    <p class="size " *ngFor="let lib of doc.tags.slice(0, 2) ">
+                                        - {{ lib.libelle }} 
+                                    </p>
+                                    <div *ngIf="doc.contentType.length>=30;else moinns"><p class="dep">
+                                        <b>Type : </b>
+                                        {{doc.contentType.substr(doc.contentType.indexOf('/') + 1, 10)}}... {{doc.contentType.substr(doc.contentType.length-6, doc.contentType.length)}}
+                                    </p></div>
+                                        <ng-template  #moinns> <p class="dep">
+                                            <b>Type : </b>
+                                            {{ doc.contentType }}
+                                        </p></ng-template>
+                                    <p class="dep ">
+                                        <b> Ajouté par : </b>{{ doc.owner }} 
+                                        </p>
+                                </div>
+                                
+                                <i class='bx bxs-heart' *ngIf="favorita(doc) "(click)="toggleFav(doc) "></i>
+                                <i class='bx bx-heart' *ngIf="!favorita(doc)"  alt="file" (click)="tofav(doc) "></i>
+                                <i class='bx bx-edit-alt'*ngIf="(showUserboard && deleta(doc))||(showFormboard && deleta(doc))" (click)="opene(contente,doc.id) " href="javascript:void(0); "></i>
+                                <i class='bx bx-edit-alt'*ngIf="showAdminBoard" (click)="opene(contente,doc.id) " href="javascript:void(0); "></i>
+                                <i class='bx bx-down-arrow-circle' (click)="downloadDoc(doc.id,doc.name) "></i>
+                                <i class='bx bx-trash-alt'*ngIf="(showUserboard && deleta(doc))||(showFormboard && deleta(doc))" (click)="open(content,doc.id) " href="javascript:void(0); "></i>
+                                <i class='bx bx-trash-alt' *ngIf="showAdminBoard" (click)="open(content,doc.id) " href="javascript:void(0); "></i>
+                            
+                        </div>
+                    </span>
+                </div>
+
+               </div>
+                <div class="MultiSelect" *ngIf="showcontenu ">
+                     <i class='bx bx-down-arrow-circle' (click)="downloadmultidoc() "></i>
+                </div>
+                <div *ngIf="showcontenu ">
+                    <div class="table-responsive showform">
+                        
+                        <table class="table table-striped ">
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:2% "></th>
+                                    <th style="width:12% ">Icone</th>
+                                    <th style="width:18% ">Titre</th>
+                                    <th style="width:14% ">Type</th>
+                                    <th style="width:12% ">Poste</th>
+                                    <th style="width:10% ">Tag</th>
+                                    <th style="width:15% ">Ajouté par</th>
+                                    <th style="width:20% ">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let doc of documents | async | filter:searchText , let i=index ">
+                                    <td>{{i+1}}</td>
+                                    <td>
+                                        
+                                            <img class=" delete"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file" (click)="afficher(doc.id)">
+                                            <img class="delete " *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file" (click)="afficher(doc.id)">
+                                            <img class="delete " *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file " (click)="afficher(doc.id)">
+                                            <img class="delete " *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file " (click)="afficher(doc.id)">
+                                            <img class="delete " *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file " (click)="afficher(doc.id) ">
+                                            <img class="delete " *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " (click)="afficher(doc.id)">
+                                            <img class="delete " *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file " (click)="afficher(doc.id) ">
+                                            <img class="delete " *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                                src="../../../assets/images/file-inconnu.png"  alt="file " (click)="afficher(doc.id) ">
+                                        
+                                    </td>
+                                    <td>{{ doc.name.length > 20 ? doc.name.slice(0, 20) + '...' : doc.name }}</td>
+                                    <td>{{ doc.contentType }}</td>
+                                    <td> <p *ngFor="let department of doc.departments.slice(0, 2)">
+                                        {{ department.name }}
+                                      </p></td>
+                                    <td>
+                                        <p *ngFor="let lib of doc.tags.slice(0, 2) ">
+                                            - {{ lib.libelle }}
+                                        </p>
+                                    </td>
+                                    <td>{{doc.owner}}</td>
+                                    <td> 
+                                <i class='bx bxs-heart' *ngIf="favorita(doc) "(click)="toggleFav(doc) "></i>
+                                <i class='bx bx-heart' *ngIf="!favorita(doc)"  alt="file" (click)="tofav(doc) "></i>
+                                <i class='bx bx-edit-alt'*ngIf="(showUserboard && deleta(doc))||(showFormboard && deleta(doc))" (click)="opene(contente,doc.id) " href="javascript:void(0); "></i>
+                                <i class='bx bx-edit-alt'*ngIf="showAdminBoard" (click)="opene(contente,doc.id) " href="javascript:void(0); "></i>
+                                <i class='bx bx-down-arrow-circle' (click)="downloadDoc(doc.id,doc.name) "></i>
+                                <i class='bx bx-trash-alt'*ngIf="(showUserboard && deleta(doc))||(showFormboard && deleta(doc))" (click)="open(content,doc.id) " href="javascript:void(0); "></i>
+                                <i class='bx bx-trash-alt' *ngIf="showAdminBoard" (click)="open(content,doc.id) " href="javascript:void(0); "></i>
+                                 <i [ngClass]="doc.showIcon ? 'bx bxs-checkbox-checked' : 'bx bx-checkbox'" (click)="toggleIcon(doc)"></i> 
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <ng-template #content let-c="close " let-d="dismiss ">
+                <div class="modal-header ">
+                    <h4 class="modal-title " id="modal-basic-title ">Supprimer un document</h4>
+                    <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click ') ">    
+                              <span aria-hidden="true ">×</span>    
+                          </button>
+                </div>
+                <div class="modal-body ">
+                    <p>Etes vous sûr de la suppression ?</p>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click ') ">Annuler</button>
+                    <button type="button " class="btn btn-outline-danger " (click)="c('yes') ">Supprimer</button>
+                </div>
+            </ng-template>
+
+            <ng-template #contente let-c="close " let-d="dismiss ">
+                <div class="modal-header ">
+                    <h4 class="panel-heading "  id="modal-basic-title ">Modifier un document</h4>
+                    <button type="button " class="close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                              <span aria-hidden="true ">×</span>    
+                          </button>
+                </div>
+
+                <div class="modal-body ">
+
+                    <form class="form-group animate__animated animate__backInDown " name="form " #f="ngForm">
+                        <div class="form-group ">
+                            <label for="name">Titre</label>
+                            <div>
+
+                                <input #name="ngModel" ngDefaultControl name="name" [(ngModel)]="form.name" type="text" class="form__input" id="DocName" required minlength="1" maxlength="30" pattern="^[a-zA-Z_0-9 ]+">
+                                
+                              <div *ngIf="name.invalid && (name.dirty || name.touched)" style="display: grid; text-align: center; color: red;" >
+                                
+                                <small class="alert_danger" *ngIf="name.errors?.['required']">Le titre est obligatoire</small>
+                                
+                              <small class="alert_danger" *ngIf="name.errors?.['minlength'] || name.errors?.['maxlength']">Le titre doit contenir entre 1 et 0 caractères.</small>
+                                
+                               <small class="alert_danger" *ngIf="name.errors?.['pattern']">Le titre est invalide, seules les lettres , les nombres et les underscores (_) sont autorisés.</small>
+                                
+                              </div>
+                                
+                                </div>
+                            <label for="name">Type</label>   
+                        <div>
+                            <input #contentType="ngModel" contentType [(ngModel)]="doc.contentType" disabled type="text " class="form__input" id="contentType " required name="contentType ">
+                        </div>
+                            <mat-form-field class="input">
+                                <mat-chip-list #taglist>
+                                    <mat-chip selected color="grey" *ngFor="let Tag of Tags" [selectable]="selectable" [removable]="removable" (removed)="remove(Tag)">
+                                        {{Tag}}
+                                        <mat-icon matChipRemove *ngIf="removable"> </mat-icon>
+                                    </mat-chip>
+                                    <input required minlength="2" maxlength="12" placeholder="Ajouter Tags" [matChipInputFor]="taglist" [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
+                                </mat-chip-list>
+
+                            </mat-form-field>
+
+                            <br>
+                            <label *ngIf="showAdminBoard" for="name">Poste</label>
+                              <div *ngIf="showAdminBoard">
+                                <select disabled name="dep" id="dep" class="form__input"  #dep="ngModel" [(ngModel)]="form.dep" (change)="onDepartmentSelected($event.target)" multiple>
+                                    <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                                  </select>
+                                  
+                            </div>
+                           
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button " class="btn btn-outline-secondary " (click)="d( 'Cross click') ">Annuler</button>
+                    <button [disabled]="name.invalid && (name.dirty || name.touched)" type="button " class="btn btn-outline-info " (click)="c( 'yes') ">Modifier</button>
+                </div>
+            </ng-template>
+        </div>
+    </div>
+</div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

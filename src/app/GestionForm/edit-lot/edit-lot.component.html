@@ -1,0 +1,189 @@
+<div class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="panel panel-primary">
+            <div class=" panel-heading ">
+                <h1><strong> Modifier un Lot </strong></h1>
+            </div>
+            <div class="panel-body ">
+                <div>
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                    <small *ngIf="valid" class=" alert alert-success"> {{messagevalid}}</small> 
+
+                </div>
+                <div class="row">
+                    <form class="form-group" name="form" >
+                       
+                        <div>
+                            <input type="text" name="formation" id="formation"[formControl]="LotName"  value="{{SelectedviewLot.name}}" [(ngModel)]="nameLot" class="form__input" autofocus>
+                            <div *ngIf="LotName.invalid && (LotName.dirty || LotName.touched)" style="display: grid; text-align: start;; color: red;" >
+                                <small class="alert_danger" *ngIf="LotName.errors?.['required']">Nom du lot est obligatoire</small>
+                            </div>  
+                        </div>
+                        <div>
+                           <input type="text" placeholder="Date de début : {{SelectedviewLot.startDate| date:'dd/MM/yyyy HH:mm'}}"class="form__input" disabled>
+                        </div> 
+                        <div>
+                             <input type="text" placeholder="Date limite : {{SelectedviewLot.endDate | date:'dd/MM/yyyy HH:mm'}}"class="form__input" disabled>
+                        </div> 
+                        <!--<div style="display: flex;">Poste : 
+                            <span *ngFor="let dep of SelectedviewLot.departments"> {{dep.name}}</span>
+                        </div> bech yit7at selected par defaut fil poste --> 
+                    </form>     
+                </div>
+
+               
+                <div *ngIf="showposte"> 
+                     
+                    <select name="dep" id="dep" class="form__inputt"   (change)="onDepartmentSelected($event.target)" multiple >
+                        <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                    </select>
+                </div>
+                <div class="detailsform" *ngIf="showparticipants">
+                        <table >
+                            <thead>
+                                <tr disabled>
+                                    <th style="width:13.2% ">Les participants<i class='bx bx-plus-circle' (click)="openadduser(adduser)"></i>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of showselecteduser">
+                                    <td>
+                                      <div class="view-wrapper">
+                                        <img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }} " style="margin-right:5px ;">
+                                        <span class="doc-name">{{ user.username.length > 20 ? user.username.slice(0,12) + '...' : user.username }}</span>
+                                        <span class="download-icon"><i class='bx bx-trash-alt' (click)=" deletuser(user)"></i></span>
+                                      </div>
+                                    </td>
+                                </tr>
+                             
+                            </tbody>
+                        </table>
+                </div>
+                
+
+               <div class="MultiSelect">
+                <i class="bx bx-data icon" (click)="Showposte()" ></i>
+                <i class="bx bx-user icon" (click)="Showparticipants()" ></i>
+                <i class='bx bx-add-to-queue icon' (click)="openaddform(SelectedviewLot)"></i>
+               </div>
+
+                <div class="table-responsive showform" style=" margin-top: 14px;">
+                    <table class="table table-striped" >
+                        <thead>
+                            <tr disabled>
+                                <th ></th>
+                                <th >Nom formation</th>
+                                <th >Date de début</th>
+                                <th >Date Limite</th>
+                                <th >Formateur</th>
+                                <th >Poste</th>
+                                <th>Localisation</th>
+                                <th >Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        
+                            <tr [ngClass]="{'expired': isDateExpired(formationPlan.endDate)}" *ngFor="let formationPlan of SelectedviewLot.formationsPlan let i = index">
+                                <td>{{i+1}}</td>
+                                <td>{{ formationPlan.formation.name}}</td>
+                                <td>{{ formationPlan.startDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                <td>{{ formationPlan.endDate | date:'dd/MM/yyyy HH:mm'}}</td>
+                                <td>{{ formationPlan.formateur.username}}</td>
+                                <td><span *ngFor="let dep of formationPlan.departements">{{dep.name}}</span></td>
+                                <td>{{ formationPlan.localisation}}</td>
+                                <td> 
+                                    <ng-container>
+                                        <i class='bx bx-edit-alt icon' (click)="openeditform(formationPlan)"></i>
+                                      </ng-container>
+                                    <i class='bx bx-minus-circle icon' (click)="opensupform(content,formationPlan)"></i>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 60px;">
+                    <button type="button " class="btn btn-outline-secondary" (click)= "retour()">Annuler</button>
+                    <button type="submit"  class="btn btn-outline-info" style="border-radius: 20px !important; margin-left: 15px !important;" (click)= "updateLot()">Modifier</button>
+                </div> 
+            
+
+            <!--popup sup formation-->
+            <ng-template #content let-c="close" let-d="dismiss">
+                <div class="modal-header">
+                  <h4 class="modal-title" id="modal-basic-title">Retirer une formation d'un lot</h4>
+                  <button type="button" class="close_btn" aria-label="Close" (click)="d('Cross click')">    
+                    <span aria-hidden="true">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <p>Êtes-vous sûr de vouloir retirer cette formation de ce lot ?</p>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-outline-secondary" (click)="c('cancel')">Annuler</button>
+                  <button type="button" class="btn btn-outline-danger" (click)="c('yes')">Retirer</button>
+                </div>
+            </ng-template>
+
+             <!--popup add user-->
+         <ng-template #adduser let-c="close " let-d="dismiss " class="modal-content">
+            <div class="modal-header ">
+                <h4 id="modal-basic-title ">Ajouter des participants</h4>
+                <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                  <span aria-hidden="true ">×</span>    
+              </button>
+            </div>
+            <div class="modal-body ">
+                <div class="container-fluid">
+                    <form class="form-group animate__animated animate__backInDown" id="form-details">
+                        <div class="search-hero mat-form-field" >
+                            <select name="filtre" id="filtre " filre  class="filter-list"  required >
+                                <option  value="nom"selected >Nom</option>
+                                <option value="role">Role</option>
+                                <option value="poste">Poste</option>
+                            </select>
+                            <input class="form-control" type="text" name="search" [(ngModel)]="searchText"  autocomplete="off" placeholder="&#61442;" (input)="updateFilteredUsers();"></div>
+                        <table class="table table-striped popupajout">
+                            <thead>
+                                <tr disabled>
+                                    
+                                    <th style="width:3% ">Photo</th>
+                                    <th style="width:3% ">Nom utilisateur</th>
+                                    <th style="width:3% ">Poste</th>
+                                    <th style="width:3% ">Role</th>
+                                    <th style="width:3% ">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let user of users | async | filter:searchText; let i = index" >
+                                    <td><img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}"></td>
+                                    <td>{{ user.username.length > 20 ? user.username.slice(0,17) + '...' : user.username }}</td>
+                                    <td>{{user.poste}}</td>
+                                    <td>
+                                        <div *ngFor="let role of user.roles">
+                                            {{role.name}}
+                                        </div>
+                                    </td>
+                                    <td ><i [ngClass]="user.showIcon ? 'bx bx-check-square' : 'bx bx-rectangle'" (click)="toggleIcon2(user)"></i></td>
+                                </tr>
+                             </tbody>
+                        </table>
+                    </form>
+
+                </div>
+            </div>
+            <div class="modal-footer ">
+                <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+                <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Ajouter</button>
+            </div>
+        </ng-template>
+
+    </div>
+</div>
+
+
+
+
+
+           

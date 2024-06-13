@@ -1,0 +1,78 @@
+.light{
+  --input-color :#000;
+  }
+  .dark{
+  --input-color : #fff;
+}
+  .container{
+    margin-left: 67px !important;
+    padding: 0px !important;
+    max-width: calc(99.6vw - 67px);
+  }
+  h1{
+    color: var(--h1);
+    margin: 14px 0px 16px;  
+  }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 0px;
+  }
+  .showform{
+    margin: auto;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 98%;
+    box-shadow: var(--box-shadow);
+    height: auto;
+    max-height:calc(100vh - 190px)
+  }
+  .showform thead tr {
+    position: sticky;
+    top: 0;
+  }
+ 
+  .form__input {
+    background-color: transparent;
+    border: none;
+    display: inline-block;
+    width: 100%;
+    border-bottom: 1px solid #aaa;
+    padding: 1em 0.5em 0.5em;
+    padding-left: 2em;
+    outline: none;
+    margin: 0.5em auto;
+    transition: all 0.5s ease;
+    padding-left: 0%;
+    padding-right: 0%;
+  }
+  
+  .form__input:focus {
+    border-bottom-color: #16ac98;
+    box-shadow: 0 0 5px rgba(0, 80, 80, .4);
+    border-radius: 4px;
+     }
+  
+  .bt {
+    float: right;
+    margin-bottom: 10px;
+    height: 10px;
+    display: block;
+  }
+.MultiSelect{
+  text-align: right;
+  width: 98%;
+  float: right;
+  margin-right: 1%;
+  }
+  input { 
+    color : var(--input-color) ;
+  }
+  .panel-heading{
+    color: #fff;
+    font-size: 20px;
+  }
+
+
+
+

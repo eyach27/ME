@@ -1,0 +1,141 @@
+<div *ngIf="isLoggedIn" [ngClass]="componentClass" class="container">
+    <app-dashboard></app-dashboard>
+    <div class="card text-center">
+        <div class="col-md-80 col-xs-12 col-sm-12 ">
+            <div class="container-fluid">
+                <div style="margin-bottom:16px ; margin-top:5px"> 
+                    <small *ngIf="failed" class=" alert alert-danger"> {{errorMessage}}</small>
+                     <small *ngIf="valid" class=" alert alert-success"> {{message}}</small> 
+                </div>
+
+                <div class="row ">
+                    <h1 class="animate__animated animate__bounce mt-3"><strong>Créer une formation</strong></h1>
+                </div>
+                <div class="row">
+                    <form class="form-group animate__animated animate__backInDown"  name="form" novalidate  (ngSubmit)="onSubmit() "style="padding-left: 30px;">
+
+                        <div class="row">
+                            <input #nameformation="ngModel" type="text" name="formation" #nomformation id="formation" placeholder="Nom de la formation" class="form__input"  minlength="2" maxlength="20" [(ngModel)]="form.nameformation" required >
+                            <div *ngIf="nameformation.invalid && (nameformation.dirty || nameformation.touched)" style="display: grid; text-align: center; color: red;" >
+                                <small class="alert_danger" *ngIf="nameformation.errors?.['required']">Nom de formation est obligatoire</small>
+                                <small class="alert_danger" *ngIf="nameformation.errors?.['minlength'] || nameformation.errors?.['maxlength']">Il doit contenir entre 2 et 20 caractères.</small>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <input type="text" name="nameoftrainer" class="form__input" [(ngModel)]="searchText" (input)="filterTrainers()" [(ngModel)]="selectedTrainer" >
+                                 <ul id="scroltrainer">
+                                      <li *ngFor="let user of filtertrainers let i = index" (click)="selectTrainer(user)"><img class="userimage" [src]="user.p" alt="Photo de profil de {{ user.username }}">{{user.username }}</li>
+                                 </ul>
+                        </div>
+                        <div class="row">
+                            <span class='gray' style="margin-top: 8px; margin-bottom: 3px;">Choisissez les postes</span>
+                            <select name="dep" id="dep" class="form__input"   (change)="onDepartmentSelected($event.target)" multiple >
+                                <option *ngFor="let department of departments; let i = index" [value]="department.name" [ngClass]="{'selected': department.selected}" (click)="toggleDepartmentSelection(i)">{{ department.name }}</option>
+                            </select>
+                        </div>
+
+                        <div class="row">
+                            <div style="margin-top: 8px; margin-bottom: 14px;">
+                                 <span class='gray'>Ajoutez des documents</span><i class='bx bx-plus-circle' (click)="openadddoc(adddoc)"></i>
+                                 <br>
+                                 <span class='gray' style="font-size:12px; font-weight: bold;">Si vous souhaitez supprimer un document, il vous suffit de cliquer sur son image.</span>
+                                </div>
+                        
+                            <div class="lesdocuments">
+                                <div *ngFor="let doc of showselectedfile" (click)="delet(doc)">
+                                    
+                                    <img class="docimage"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file">
+                                    <img class="docimage" *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file">
+                                    <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file ">
+                                    <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file ">
+                                    <img class="docimage" *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file ">
+                                    <img class="docimage" *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " >
+                                    <img class="docimage" *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file ">
+                                    <img class="docimage" *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                        src="assets/images/file-inconnu.png"  alt="file">
+                                    <span>{{ doc.name.length >12 ? doc.name.slice(0, 12) + '...' : doc.name }}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <input [disabled]="nameformation.invalid && (nameformation.dirty || nameformation.touched)"  type="submit" value="Créer" class=" btn-default " >
+                    </form>
+                </div>
+
+            </div>
+
+
+
+            <!--popup add doc-->
+            <ng-template #adddoc let-c="close " let-d="dismiss " class="modal-content">
+                <div class="modal-header ">
+                    <h4 id="modal-basic-title ">Ajouter des documents</h4>
+                    <button type="button " class="close close_btn " aria-label="Close " (click)="d( 'Cross click') ">    
+                      <span aria-hidden="true ">×</span>    
+                  </button>
+                </div>
+                <div class="modal-body ">
+                    <div class="container-fluid">
+                        <form class="form-group animate__animated animate__backInDown" id="form-details">
+                            <div class="search-hero mat-form-field" >
+                                <select name="filtre" id="filtre" filtre  class="filter-list"  required #filtre="ngModel" [(ngModel)]="formSearch.filtre">
+                                    <option  value="nom-doc">Titre</option>
+                                    <option value="tag">Tag</option>
+                                    <option value="poste">Poste</option>
+                                </select>
+                                <input class="form-control"  type="text"  autocomplete="off" placeholder="&#61442;" (input)="Search()" [(ngModel)]="formSearch.rech"  name="rech" filtre></div>
+                            <table class="table table-striped popupajout">
+                                <thead>
+                                    <tr disabled>
+                                        <th style="width:3% ">Type</th>
+                                        <th style="width:3% ">Titre</th>
+                                        <th style="width:3% ">Tag</th>
+                                        <th style="width:3% ">Poste</th>
+                                        <th style="width:3% ">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr *ngFor="let doc of documents | filter:searchText; let i=index">
+                                        <td>
+                                        
+                                            <img class="docimage"  *ngIf="doc.contentType=='text/plain' || doc.contentType=='application/vnd.openxmlformats-officedocument.wordprocessingml.document'" src="assets/images/txt.png" alt="file">
+                                            <img class="docimage" *ngIf="doc.contentType=='application/pdf'" src="assets/images/pdf.png"  alt="file">
+                                            <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.presentationml.presentation'" src="assets/images/ppt.png" alt="file ">
+                                            <img class="docimage" *ngIf="doc.contentType=='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'" src="assets/images/xls.png"  alt="file ">
+                                            <img class="docimage" *ngIf="doc.contentType=='application/zip' || doc.contentType=='application/rar' " src="assets/images/zip.png" alt="file ">
+                                            <img class="docimage" *ngIf="doc.contentType=='video/mp4' " src="assets/images/mp4.png" alt="file " >
+                                            <img class="docimage" *ngIf="doc.contentType=='image/png' ||doc.contentType=='image/jpeg' ||doc.contentType=='image/jpg'" src="assets/images/png.png" alt="file ">
+                                            <img class="docimage" *ngIf="doc.contentType!='application/pdf' && doc.contentType!='image/png' && doc.contentType!='image/jpeg' && doc.contentType!='image/jpg' && doc.contentType!='video/mp4' && doc.contentType!='application/zip' && doc.contentType!='application/rar' && doc.contentType!='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' && doc.contentType!='text/plain' && doc.contentType !='application/vnd.openxmlformats-officedocument.presentationml.presentation' && doc.contentType !='application/vnd.openxmlformats-officedocument.wordprocessingml.document'"
+                                                src="assets/images/file-inconnu.png"  alt="file">
+                                        
+                                        </td>
+                                        <td>{{ doc.name.length > 20 ? doc.name.slice(0, 20) + '...' : doc.name }}</td>
+                                        <td>
+                                            <p *ngFor="let lib of doc.tags.slice(0, 2) ">
+                                                - {{ lib.libelle }}
+                                            </p>
+                                        </td>
+                                        <td> <p *ngFor="let department of doc.departments.slice(0, 2)">
+                                            {{ department.name }}
+                                          </p>
+                                        </td>
+                                        <td ><i [ngClass]="doc.showIcon ? 'bx bx-check-square' : 'bx bx-rectangle'" (click)="toggleIcon(doc)"></i></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="modal-footer ">
+                    <button type="button " class="btn btn-outline-secondary" (click)="d( 'Cross click') ">Annuler</button>
+                    <button type="button " class="btn btn-outline-success " (click)="c( 'yes') ">Ajouter</button>
+                </div>
+            </ng-template>
+
+        </div>
+    </div>
+</div>
+<div *ngIf="!isLoggedIn" class="container mt-4">
+    <app-home></app-home>
+</div>

@@ -1,0 +1,222 @@
+.profile {
+     --card-bg-color-light :#e9ecef ;
+     --card-bg-color-dark :#161616 ;
+    
+     --card-color-light:#16ac98;
+     --card-color-dark:#B5B5B5;
+
+     --container3-color-light : #38424c; 
+     --container3-color-dark : #B5B5B5 ;
+
+     --hr-color-light: #0ed8b8 ;
+     --hr-color-dark:#fff;
+
+     --input-color-light:#04352e;
+     --input-color-dark: white;
+     --bouton-quit-light : #000;
+
+     --bouton-quit-dark : #0ed8b8;
+     
+     --option-color-light : #fff;
+     
+     --option-color-dark :#18191a ;
+    }
+    
+    .light {
+    
+     --card-bg-color: var(--card-bg-color-light ) ;   
+     --card-color: var(--card-color-light);   
+     --container3-color: var(--container3-color-light);
+     --hr : var(--hr-color-light);   
+     --input-color : var(--input-color-light);
+     --bouton-quit : var(--bouton-quit-light);
+     --option-color-profil: var(--option-color-profil-light);
+     --option-color: var(--option-color-light);
+    }
+    
+    .dark{
+    
+     --card-bg-color: var(--card-bg-color-dark ) ;
+     --card-color: var(--card-color-dark);
+     --container3-color: var(--container3-color-dark);
+     --hr : var(--hr-color-dark);    
+     --input-color : var(--input-color-dark);
+     --bouton : var(--bouton-quit-dark);
+     --option-color-profil : var(--option-color-profil-dark);
+     --option-color : var(--option-color-dark);
+    }
+    
+    .container{
+    margin: 0 auto;
+    margin-top: 4rem;
+    border-radius: 2%;
+    background-color: transparent;
+
+    
+    box-shadow: var(--box-shadow);
+    
+    position: relative;
+    
+    overflow: hidden;
+    
+    width: 1000px;
+    
+    max-width: 60%;
+    
+    min-height: 428px;
+    
+    border: none;
+   
+    }
+    h4{
+      font-size: 20px;
+    }
+
+    .card{
+      margin: 15px;
+      margin-top: 50px !important;
+      border: 1px solid rgba(0,0,0,.125);
+      padding: 10px;
+      
+    }
+    
+    .photo-update{
+    
+    display: flex;
+    
+    flex-direction: column;
+    
+    align-items: center;
+    
+    margin-top: 98px;
+    
+    margin-left: 15px;
+    
+    }
+    
+    
+    
+    
+    img {
+    
+     width: 72%;
+    
+     height: 55%;
+    
+     border-radius: 50%;
+    
+    
+    
+    }
+    
+    
+    
+    #edit_photo,#delet_photo{//pour icone edit
+    
+     color: #0ed8b8;
+    
+     font-size: 30px;
+    
+     line-height: 1;
+    
+     margin-top: 4px;
+    
+    }
+    
+    
+    hr{
+    
+     color :var(--hr) ;
+    
+    }
+    
+    .card{
+    
+     background-color:var(--card-bg-color);
+    
+     color: var(--card-color);
+     h1{
+    
+        color: var(--h1);
+       
+       }
+    } 
+    
+    .container3{
+    
+     color: var(--container3-color);
+    
+    }
+    
+    #modifier{
+    
+     background-color: transparent;
+    
+     float: right;
+    
+      box-shadow: none; 
+    
+    }
+    
+    #modifier:hover{
+     background-color: #0ed8b8;
+    }
+    //var not working v   
+    #poste option{
+    background-color: var(--option-color);
+    color: #767676;}
+
+.container-fluid form{
+    text-align: left;
+}
+
+.container-fluid form input{
+    display: block;
+    outline: none;
+    border: none;
+    border-bottom: 1px solid #38424c;
+    width: 100%;
+    padding: 8px 7px;
+    color: var(--input-color);
+    background-color: transparent;
+  }
+
+
+.container-fluid form #poste{
+    width: 95%;
+    margin: 3px 12PX 0px;
+    padding: 8px 0px;
+    border: none;
+    border-bottom: 1px solid #38424c;
+    outline: none;
+    background-color: var(--input-bg);
+    color: var(--input-color);
+
+}
+
+select #poste.form__input{
+  background-color: #161616;
+}
+#poste{border-radius: 0px;}
+option :hover{
+  background-color: #0ed8b8;
+}
+
+#role {
+    margin: 3px 12PX 1px;
+    width: 95%;
+}
+.close_btn{
+    border: none; 
+    color:#fff ; 
+    background-color: transparent;
+}
+
+
+.close_btn :hover{
+  color: var(--bouton-quit);
+}
+
+
+
+
